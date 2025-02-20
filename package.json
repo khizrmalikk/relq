@@ -1,0 +1,43 @@
+{
+  "name": "real-estate-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.5",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@react-three/fiber": "^9.0.0-alpha.8",
+    "@types/three": "^0.172.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.5",
+    "lucide-react": "^0.473.0",
+    "next": "15.1.5",
+    "next-auth": "^4.24.11",
+    "next-themes": "^0.4.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "retell-client-js-sdk": "^2.0.5",
+    "retell-sdk": "^4.18.0",
+    "simplex-noise": "^4.0.3",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
+    "three": "^0.172.0"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.5",
+    "@eslint/eslintrc": "^3"
+  }
+}
