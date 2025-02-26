@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { RetellWebClient } from "retell-client-js-sdk";
 
-import AudioVisualizer from "@/components/AudioVisualizer";
 import CallAnalysis from "@/components/CallAnalysis";
 import FeedbackForm from "@/components/FeedbackForm";
 import { Button } from "@/components/ui/button";

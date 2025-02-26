@@ -1,9 +1,19 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Building, MessageSquare, BarChart3, Clock, Database, Bot } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Building,
+  MessageSquare,
+  BarChart3,
+  Clock,
+  Database,
+  Bot,
+  Upload,
+  LineChart,
+  Pencil,
+} from "lucide-react";
+import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -11,209 +21,340 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Meteors } from "@/components/ui/meteors"
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Meteors } from "@/components/ui/meteors";
+import { HeroParallax } from "@/components/ui/hero-parallax";
+import { WavyBall } from "@/components/WavyBall";
+import { DemoCall } from "@/components/DemoCall";
+import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
+import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
+import { SiteFooter } from "@/components/footer";
 
 export default function LandingPage() {
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [email, setEmail] = useState("")
-  const router = useRouter()
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const router = useRouter();
+
+  const products = [
+    {
+      title: "Moonbeam",
+      link: "https://gomoonbeam.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/moonbeam.png",
+    },
+    {
+      title: "Cursor",
+      link: "https://cursor.so",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/cursor.png",
+    },
+    {
+      title: "Rogue",
+      link: "https://userogue.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/rogue.png",
+    },
+   
+    {
+      title: "Editorially",
+      link: "https://editorially.org",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/editorially.png",
+    },
+    {
+      title: "Editrix AI",
+      link: "https://editrix.ai",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/editrix.png",
+    },
+    {
+      title: "Pixel Perfect",
+      link: "https://app.pixelperfect.quest",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/pixelperfect.png",
+    },
+   
+    {
+      title: "Algochurn",
+      link: "https://algochurn.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/algochurn.png",
+    },
+    {
+      title: "Aceternity UI",
+      link: "https://ui.aceternity.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/aceternityui.png",
+    },
+    {
+      title: "Tailwind Master Kit",
+      link: "https://tailwindmasterkit.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/tailwindmasterkit.png",
+    },
+    {
+      title: "SmartBridge",
+      link: "https://smartbridgetech.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/smartbridge.png",
+    },
+    {
+      title: "Renderwork Studio",
+      link: "https://renderwork.studio",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/renderwork.png",
+    },
+   
+    {
+      title: "Creme Digital",
+      link: "https://cremedigital.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/cremedigital.png",
+    },
+    {
+      title: "Golden Bells Academy",
+      link: "https://goldenbellsacademy.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/goldenbellsacademy.png",
+    },
+    {
+      title: "Invoker Labs",
+      link: "https://invoker.lol",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/invoker.png",
+    },
+    {
+      title: "E Free Invoice",
+      link: "https://efreeinvoice.com",
+      thumbnail:
+        "https://aceternity.com/images/products/thumbnails/new/efreeinvoice.png",
+    },
+    // Add more properties to fill out the rows (15 total recommended)
+    // ... more properties ...
+  ];
+
+  const testimonials = [
+    {
+      quote: "I couldn't believe how much time we saved. This tool is a game-changer for real estate agents!",
+      name: "Sarah Johnson",
+      designation: "Real Estate Agent",
+      src: "/testimonials/person1.jpg" // Make sure to add actual image paths
+    },
+    {
+      quote: "The AI-powered calls have dramatically improved our lead response time and conversion rates.",
+      name: "Michael Chen",
+      designation: "Real Estate Agent",
+      src: "/testimonials/person2.jpg"
+    },
+    {
+      quote: "This platform has revolutionized how we handle incoming leads. It's like having a 24/7 sales team.",
+      name: "Emma Rodriguez",
+      designation: "Agency Owner",
+      src: "/testimonials/person3.jpg"
+    }
+  ];
+
+  const howItWorksItems = [
+    {
+      title: "Engage Leads Instantly",
+      description: "Our AI agent calls new leads as soon as they come in, ensuring no opportunity is missed.",
+      link: "#engage-leads",
+      icon: MessageSquare
+    },
+    {
+      title: "Personalized Conversations",
+      description: "With an always-updated knowledge base of your listings and property data, the AI delivers tailored recommendations to potential clients.",
+      link: "#personalized-conversations",
+      icon: Building
+    },
+    {
+      title: "Actionable Insights",
+      description: "Gain valuable data on lead preferences and readiness, giving your team the upper hand.",
+      link: "#actionable-insights",
+      icon: BarChart3
+    },
+    {
+      title: "Step 1. Upload Leads",
+      description: "Get started by uploading your leads through a simple CSV file or sync directly with your CRM system.",
+      link: "#upload-leads",
+      icon: Upload
+    },
+    {
+      title: "Step 2. AI Qualification",
+      description: "Our AI system automatically calls and qualifies your leads, saving you time and resources.",
+      link: "#ai-qualification",
+      icon: Upload
+    },
+    {
+      title: "Step 3. Access Insights",
+      description: "Review detailed data insights and focus your attention on warm, qualified leads ready for follow-up.",
+      link: "#access-insights",
+      icon: LineChart
+    }
+  ];
+
+  const keyFeatures = [
+    {
+      title: "AI-Powered Lead Response",
+      description: "Instant, intelligent engagement with every new lead, 24/7, ensuring no opportunity is missed.",
+      icon: <Bot className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
+      className: "md:col-span-2"
+    },
+    {
+      title: "Real-Time Analytics",
+      description: "Track and analyze lead engagement metrics and conversion rates in real-time.",
+      icon: <BarChart3 className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
+    },
+    {
+      title: "Property Database",
+      description: "Maintain an always-updated database of your listings for accurate recommendations.",
+      icon: <Database className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
+    },
+    {
+      title: "24/7 Availability",
+      description: "Never miss a lead with round-the-clock automated response system.",
+      icon: <Clock className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
+    },
+    // {
+    //   title: "Pre-built and customizable call flows",
+    //   description: "Choose from a variety of pre-built call flows or create your own to suit your business needs.",
+    //   icon: <Pencil className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
+    // },
+    {
+      title: "CRM & Database integration",
+      description: "Sync your leads and listings with your CRM or database for seamless integration.",
+      icon: <Database className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
+    },
+  ];
 
   const handleDemoClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    setDialogOpen(true)
-  }
+    e.preventDefault();
+    setDialogOpen(true);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Here you can handle the email submission
-    setDialogOpen(false)
-    router.push('/demo')
-  }
+    setDialogOpen(false);
+    router.push("/demo");
+  };
+
+  const handleStartCall = (scenario: string) => {
+    console.log(`Starting call for scenario: ${scenario}`);
+  };
+
+  const handleEndCall = () => {
+    console.log("Call ended");
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-14 flex items-center bg-primary">
+      <header className="px-4 lg:px-6 flex items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-md pt-5 pb-5">
         <Link className="flex items-center justify-center" href="#">
-          <Building className="h-6 w-6 text-white" />
-          <span className="ml-2 text-2xl font-bold text-white">AIRealty</span>
+          <span className="ml-2 text-2xl font-bold text-white">RELQ.AI</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium hover:underline underline-offset-4 text-white" href="#features">
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4 text-white"
+            href="#features"
+          >
             Features
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4 text-white" href="#how-it-works">
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4 text-white"
+            href="#how-it-works"
+          >
             How It Works
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4 text-white" href="#demo">
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4 text-white"
+            href="#demo"
+          >
             Demo
           </Link>
         </nav>
+        <div className="flex gap-4 ml-auto">
+          <button className="px-6 py-2 rounded-full tracking-widest uppercase font-bold bg-primary text-white hover:bg-white hover:text-primary transition duration-200 ml-auto border-none">
+            Try for Free
+          </button>
+          <button className="text-white border border-white px-6 py-2 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-white hover:text-primary transition duration-200 ml-auto">
+            Login
+          </button>
+        </div>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-primary">
+        <HeroParallax products={products} />
+        <section
+          className="w-full relative flex items-center justify-center bg-black aspect-video"
+          id="features"
+        >
+          <iframe
+            src="https://player.vimeo.com/video/1059635565?h=ba13b4df50&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            title="Feature Video"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+            allowFullScreen
+            className="w-full h-full"
+          />
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="how-it-works">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white">
-                  Revolutionize Real Estate Lead Qualification with AI
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-200 md:text-xl">
-                  Empower your agency with smarter, faster, and more personalized lead management – designed
-                  specifically for real estate professionals.
-                </p>
-              </div>
-              <div className="w-full max-w-sm space-y-2">
-                <form className="flex space-x-2">
-                  <Input className="max-w-lg flex-1 bg-background/90 text-foreground placeholder:text-[#5C6A6D]" placeholder="Enter your email" type="email" />
-                  <Button type="submit" className="bg-accent text-accent-foreground hover:bg-accent/90">Get Started</Button>
-                </form>
-              </div>
-            </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              How It Works
+            </h2>
+            <HoverEffect 
+              items={howItWorksItems.map(item => ({
+                title: item.title,
+                description: item.description,
+                link: item.link
+              }))} 
+            />
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/10" id="features">
+        <section
+        className="w-full py-12 md:py-24 lg:py-32 bg-background"
+        id="demo"
+      >
+        <div className="container mx-auto px-4 md:px-6">
+          <DemoCall onStartCallAction={handleStartCall} onEndCallAction={handleEndCall} />
+        </div>
+      </section>
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="features">
           <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-black">Key Features</h2>
-            <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
-              <div className="relative overflow-hidden rounded-lg border border-border/40 bg-gradient-to-b from-primary/20 to-primary/10 p-8">
-                <Meteors number={10} className="!opacity-[0.3]" />
-                <div className="flex flex-col items-center space-y-3 text-center relative z-10">
-                  <Clock className="h-12 w-12 text-primary" />
-                  <h3 className="text-xl font-bold text-black">Real-Time Lead Engagement</h3>
-                  <p className="text-gray-500 dark:text-gray-400">Every inquiry gets an immediate response.</p>
-                </div>
-              </div>
-              <div className="relative overflow-hidden rounded-lg border border-border/40 bg-gradient-to-b from-primary/20 to-primary/10 p-8">
-                <Meteors number={10} className="!opacity-[0.3]" />
-                <div className="flex flex-col items-center space-y-3 text-center relative z-10">
-                  <Database className="h-12 w-12 text-primary" />
-                  <h3 className="text-xl font-bold text-black">Dynamic Knowledge Base</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Automatically sync your property listings for accurate recommendations.
-                  </p>
-                </div>
-              </div>
-              <div className="relative overflow-hidden rounded-lg border border-border/40 bg-gradient-to-b from-primary/20 to-primary/10 p-8">
-                <Meteors number={10} className="!opacity-[0.3]" />
-                <div className="flex flex-col items-center space-y-3 text-center relative z-10">
-                  <Bot className="h-12 w-12 text-primary" />
-                  <h3 className="text-xl font-bold text-black">AI-Driven Efficiency</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Focus on closing deals while the AI handles initial conversations.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32" id="how-it-works">
-          <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">How It Works</h2>
-            <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
-              <div className="flex flex-col items-center space-y-3 text-center">
-                <MessageSquare className="h-12 w-12 text-primary" />
-                <h3 className="text-xl font-bold">Engage Leads Instantly</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Our AI agent calls new leads as soon as they come in, ensuring no opportunity is missed.
-                </p>
-              </div>
-              <div className="flex flex-col items-center space-y-3 text-center">
-                <Building className="h-12 w-12 text-primary" />
-                <h3 className="text-xl font-bold">Personalized Conversations</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  With an always-updated knowledge base of your listings and property data, the AI delivers tailored
-                  recommendations to potential clients.
-                </p>
-              </div>
-              <div className="flex flex-col items-center space-y-3 text-center">
-                <BarChart3 className="h-12 w-12 text-primary" />
-                <h3 className="text-xl font-bold">Actionable Insights</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Gain valuable data on lead preferences and readiness, giving your team the upper hand.
-                </p>
-              </div>
-            </div>
-            <div className="mt-12 aspect-video w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${new URL('https://www.youtube.com/watch?v=2RfsK4AgMOo').searchParams.get('v')}`}
-                title="How AIRealty Works"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/10" id="demo">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-black">Try it for Yourself!</h2>
-                <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                  See the power of AI in action. Explore a fictional neighborhood. Chat with our AI agent. Discover how
-                  it qualifies leads and suggests properties.
-                </p>
-              </div>
-              <Link href="/demo" onClick={handleDemoClick}>
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 border-none">
-                  Start Demo Now
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-primary">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white">
-                  Be Among the First to Experience the Future of Real Estate
-                </h2>
-                <p className="mx-auto max-w-[600px] text-gray-200 md:text-xl">
-                  Sign up now for early access, updates, and exclusive features.
-                </p>
-              </div>
-              <div className="w-full max-w-sm space-y-2">
-                <form className="flex space-x-2">
-                  <Input className="max-w-lg flex-1 bg-background/90 text-foreground placeholder:text-[#5C6A6D]" placeholder="Enter your email" type="email" />
-                  <Button type="submit" variant="secondary" className="bg-accent text-accent-foreground hover:bg-accent/90">
-                    Register Your Interest
-                  </Button>
-                </form>
-              </div>
-            </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Key Features
+            </h2>
+            <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
+              {keyFeatures.map((item, i) => (
+                <BentoGridItem
+                  key={i}
+                  title={item.title}
+                  description={item.description}
+                  icon={item.icon}
+                  className={item.className}
+                />
+              ))}
+            </BentoGrid>
           </div>
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 md:px-6">
-            <blockquote className="mx-auto max-w-[800px] text-center italic text-muted md:text-2xl">
-              "I couldn't believe how much time we saved. This tool is a game-changer for real estate agents!"
-              <footer className="mt-4 text-sm font-semibold">– Beta Tester</footer>
-            </blockquote>
+            <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-border">
-        <p className="text-xs text-muted">© 2023 AIRealty. All rights reserved.</p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-xs hover:underline underline-offset-4" href="#">
-            Privacy Policy
-          </Link>
-          <Link className="text-xs hover:underline underline-offset-4" href="#">
-            Terms of Service
-          </Link>
-        </nav>
-        <p className="text-xs text-muted">Contact: support@airealty.com</p>
-      </footer>
+      <SiteFooter />
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="bg-background">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Enter your email to continue</DialogTitle>
+            <DialogTitle className="text-foreground">
+              Enter your email to continue
+            </DialogTitle>
             <DialogDescription className="text-muted">
-              Please provide your email address to access the demo. We'll keep you updated with our latest features.
+              Please provide your email address to access the demo. We'll keep
+              you updated with our latest features.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit}>
@@ -228,7 +369,10 @@ export default function LandingPage() {
               />
             </div>
             <DialogFooter>
-              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button
+                type="submit"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
                 Continue to Demo
               </Button>
             </DialogFooter>
@@ -236,6 +380,5 @@ export default function LandingPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
-

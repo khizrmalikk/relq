@@ -171,9 +171,9 @@ export const WavyBall = ({
        centerY,
        radius
      );
-     gradient.addColorStop(0, "#a68cff");
-     gradient.addColorStop(0.5, "#6b47f5");
-     gradient.addColorStop(1, "#4a2bad");
+     gradient.addColorStop(0, "#60a5fa");
+     gradient.addColorStop(0.5, "#3b82f6");
+     gradient.addColorStop(1, "#2563eb");
 
 
      // Draw the solid 3D ball.
@@ -304,11 +304,11 @@ export const WavyBall = ({
        }}
      />
      {/*
-       When isCalling is active, overlay the mouth visualizer on top.
+       Show the mouth visualizer when either isCalling or isSpeaking is true.
        It will draw a thin white line that animates with a wave when isSpeaking is true.
      */}
-     {isCalling && (
-       <MouthAudioVisualizer size={size} isSpeaking={isSpeaking} active={true} />
+     {(isCalling || isSpeaking) && (
+       <MouthAudioVisualizer size={size} isSpeaking={isSpeaking} active={isCalling} />
      )}
    </div>
  );
