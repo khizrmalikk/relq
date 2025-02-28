@@ -40,98 +40,37 @@ export default function LandingPage() {
 
   const products = [
     {
-      title: "Moonbeam",
+      title: "Rhea",
       link: "https://gomoonbeam.com",
       thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/moonbeam.png",
+        "/avatars/arab.webp",
     },
     {
-      title: "Cursor",
-      link: "https://cursor.so",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/cursor.png",
-    },
-    {
-      title: "Rogue",
-      link: "https://userogue.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/rogue.png",
-    },
-   
-    {
-      title: "Editorially",
-      link: "https://editorially.org",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/editorially.png",
-    },
-    {
-      title: "Editrix AI",
+      title: "Tish",
       link: "https://editrix.ai",
       thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/editrix.png",
+        "/avatars/brown.webp",
     },
     {
-      title: "Pixel Perfect",
-      link: "https://app.pixelperfect.quest",
+      title: "Ali",
+      link: "https://cursor.so",
       thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/pixelperfect.png",
+        "/avatars/arabman.webp",
+    },
+    {
+      title: "James",
+      link: "https://userogue.com",
+      thumbnail:
+        "/avatars/man.webp",
     },
    
     {
-      title: "Algochurn",
-      link: "https://algochurn.com",
+      title: "Kayla",
+      link: "https://editorially.org",
       thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/algochurn.png",
+        "/avatars/blonde.webp",
     },
-    {
-      title: "Aceternity UI",
-      link: "https://ui.aceternity.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/aceternityui.png",
-    },
-    {
-      title: "Tailwind Master Kit",
-      link: "https://tailwindmasterkit.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/tailwindmasterkit.png",
-    },
-    {
-      title: "SmartBridge",
-      link: "https://smartbridgetech.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/smartbridge.png",
-    },
-    {
-      title: "Renderwork Studio",
-      link: "https://renderwork.studio",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/renderwork.png",
-    },
-   
-    {
-      title: "Creme Digital",
-      link: "https://cremedigital.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/cremedigital.png",
-    },
-    {
-      title: "Golden Bells Academy",
-      link: "https://goldenbellsacademy.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/goldenbellsacademy.png",
-    },
-    {
-      title: "Invoker Labs",
-      link: "https://invoker.lol",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/invoker.png",
-    },
-    {
-      title: "E Free Invoice",
-      link: "https://efreeinvoice.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/efreeinvoice.png",
-    },
+    
     // Add more properties to fill out the rows (15 total recommended)
     // ... more properties ...
   ];
@@ -292,11 +231,12 @@ export default function LandingPage() {
           id="features"
         >
           <iframe
-            src="https://player.vimeo.com/video/1059635565?h=ba13b4df50&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            src="https://player.vimeo.com/video/1059635565?h=ba13b4df50&amp;background=1&amp;autoplay=1&amp;loop=1&amp;controls=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;muted=1&amp;pip=0&amp;speed=0&amp;quality=0&amp;fullscreen=0"
             title="Feature Video"
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
             allowFullScreen
             className="w-full h-full"
+            muted
           />
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="how-it-works">
