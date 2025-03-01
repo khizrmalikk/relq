@@ -1,6 +1,5 @@
 'use server';
 
-import { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
 import Retell from 'retell-sdk';
@@ -12,7 +11,6 @@ const retellClient = new Retell({
 
 export async function POST(
     request: Request,
-    response: NextApiResponse
 ) {
     try {
         const { agent_id } = await request.json()
