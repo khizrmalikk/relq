@@ -63,14 +63,14 @@ export default function LandingPage() {
       thumbnail:
         "/avatars/man.webp",
     },
-   
+
     {
       title: "Kayla",
       link: "https://editorially.org",
       thumbnail:
         "/avatars/blonde.webp",
     },
-    
+
     // Add more properties to fill out the rows (15 total recommended)
     // ... more properties ...
   ];
@@ -80,19 +80,19 @@ export default function LandingPage() {
       quote: "I couldn't believe how much time we saved. This tool is a game-changer for real estate agents!",
       name: "Sarah Johnson",
       designation: "Real Estate Agent",
-      src: "/testimonials/person1.jpg" // Make sure to add actual image paths
+      src: "/avatars/blonde.webp" // Make sure to add actual image paths
     },
     {
       quote: "The AI-powered calls have dramatically improved our lead response time and conversion rates.",
       name: "Michael Chen",
       designation: "Real Estate Agent",
-      src: "/testimonials/person2.jpg"
+      src: "/avatars/arabman.webp"
     },
     {
       quote: "This platform has revolutionized how we handle incoming leads. It's like having a 24/7 sales team.",
       name: "Emma Rodriguez",
       designation: "Agency Owner",
-      src: "/testimonials/person3.jpg"
+      src: "/avatars/arab.webp"
     }
   ];
 
@@ -236,7 +236,7 @@ export default function LandingPage() {
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
             allowFullScreen
             className="w-full h-full"
-            muted
+
           />
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="how-it-works">
@@ -244,24 +244,24 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               How It Works
             </h2>
-            <HoverEffect 
+            <HoverEffect
               items={howItWorksItems.map(item => ({
                 title: item.title,
                 description: item.description,
                 link: item.link
-              }))} 
+              }))}
             />
           </div>
         </section>
         <section
-        className="w-full py-12 md:py-24 lg:py-32 bg-background"
-        id="demo"
-      >
-        <div className="container mx-auto px-4 md:px-6">
-          <DemoCall onStartCallAction={handleStartCall} onEndCallAction={handleEndCall} />
-        </div>
-      </section>
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="features">
+          className="w-full py-12 md:py-24 lg:py-32 bg-background"
+          id="demo"
+        >
+          <div className="container mx-auto px-4 md:px-6">
+            <DemoCall onStartCallAction={handleStartCall} onEndCallAction={handleEndCall} />
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="features">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Key Features
@@ -293,7 +293,7 @@ export default function LandingPage() {
               Enter your email to continue
             </DialogTitle>
             <DialogDescription className="text-muted">
-              Please provide your email address to access the demo. We'll keep
+              Please provide your email address to access the demo. We&apos;ll keep
               you updated with our latest features.
             </DialogDescription>
           </DialogHeader>

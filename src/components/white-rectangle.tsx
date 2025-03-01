@@ -4,48 +4,48 @@ import { cn } from "@/lib/utils";
 
 
 interface WhiteRectangleProps {
- // Provide the ball's size so the rectangle can be proportional.
- ballSize?: number;
- className?: string;
- style?: React.CSSProperties;
- [key: string]: any;
+  // Provide the ball's size so the rectangle can be proportional.
+  ballSize?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  [key: string]: any;
 }
 
 
 export const WhiteRectangle: React.FC<WhiteRectangleProps> = ({
- ballSize = 100,
- className,
- style = {},
- ...props
+  ballSize = 100,
+  className,
+  style = {},
+  ...props
 }) => {
- // Define rectangle dimensions relative to the ball size.
- const width = ballSize * 0.1;
- const height = ballSize * 0.2;
+  // Define rectangle dimensions relative to the ball size.
+  const width = ballSize * 0.1;
+  const height = ballSize * 0.2;
 
 
- return (
-   <div
-     className={cn("white-rectangle-container", className)}
-     style={{
-       position: "absolute",
-       // Allow consumers to override these if desired:
-       top: style.top || "40%",
-       left: style.left || "50%",
-       transform: style.transform || "translate(-50%, -50%)",
-       ...style,
-     }}
-     {...props}
-   >
-     <div
-       className="blink"
-       style={{
-         width,
-         height,
-         backgroundColor: "#ffffff",
-         borderRadius: "4px",
-       }}
-     />
-     <style jsx>{`
+  return (
+    <div
+      className={cn("white-rectangle-container", className)}
+      style={{
+        position: "absolute",
+        // Allow consumers to override these if desired:
+        top: style.top || "40%",
+        left: style.left || "50%",
+        transform: style.transform || "translate(-50%, -50%)",
+        ...style,
+      }}
+      {...props}
+    >
+      <div
+        className="blink"
+        style={{
+          width,
+          height,
+          backgroundColor: "#ffffff",
+          borderRadius: "4px",
+        }}
+      />
+      <style jsx>{`
        @keyframes blink {
          0%,
          85%,
@@ -62,7 +62,7 @@ export const WhiteRectangle: React.FC<WhiteRectangleProps> = ({
          transform-origin: top;
        }
      `}</style>
-   </div>
- );
+    </div>
+  );
 };
 

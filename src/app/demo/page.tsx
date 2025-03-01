@@ -24,10 +24,10 @@ const DemoPage = () => {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [callResult, setCallResult] = useState<CallResult | null>(null);
-  const [demoCredits, setDemoCredits] = useState(2);
+  const [_callResult, setCallResult] = useState<CallResult | null>(null);
+  const [_demoCredits, setDemoCredits] = useState(2);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [callId, setCallId] = useState<string | null>(null);
+  const [_callId, setCallId] = useState<string | null>(null);
 
   useEffect(() => {
     // Load demo credits from localStorage or your backend
@@ -126,7 +126,7 @@ const DemoPage = () => {
           {/* Demo Credits Indicator */}
           <div className="text-right">
             <span className="gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md">
-              Demo Credits: {demoCredits}
+              Demo Credits: {_demoCredits}
             </span>
           </div>
         </div>
@@ -203,9 +203,9 @@ const DemoPage = () => {
                   <p className="mt-4">Analyzing call...</p>
                 </div>
               ) : (
-                callResult && (
+                _callResult && (
                   <CallAnalysis
-                    result={callResult}
+                    result={_callResult}
                     onComplete={() => setShowFeedback(true)}
                   />
                 )
