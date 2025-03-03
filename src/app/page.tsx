@@ -32,6 +32,8 @@ import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { SiteFooter } from "@/components/footer";
+import { FlipWords } from "@/components/ui/flip-words";
+import { Timeline } from "@/components/ui/timeline";
 
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -41,32 +43,32 @@ export default function LandingPage() {
   const products = [
     {
       title: "Rhea",
-      link: "https://gomoonbeam.com",
+      link: "#demo",
       thumbnail:
         "/avatars/arab.webp",
     },
     {
       title: "Tish",
-      link: "https://editrix.ai",
+      link: "#demo",
       thumbnail:
         "/avatars/brown.webp",
     },
     {
       title: "Ali",
-      link: "https://cursor.so",
+      link: "#demo",
       thumbnail:
         "/avatars/arabman.webp",
     },
     {
       title: "James",
-      link: "https://userogue.com",
+      link: "#demo",
       thumbnail:
         "/avatars/man.webp",
     },
 
     {
       title: "Kayla",
-      link: "https://editorially.org",
+      link: "#demo",
       thumbnail:
         "/avatars/blonde.webp",
     },
@@ -96,43 +98,61 @@ export default function LandingPage() {
     }
   ];
 
-  const howItWorksItems = [
+  const timelineData = [
     {
-      title: "Engage Leads Instantly",
-      description: "Our AI agent calls new leads as soon as they come in, ensuring no opportunity is missed.",
-      link: "#engage-leads",
-      icon: MessageSquare
+      title: "Step 1",
+      content: (
+        <div className="space-y-2">
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Upload Leads</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">Get started by uploading your leads through a simple CSV file or sync directly with your CRM system.</p>
+        </div>
+      ),
     },
     {
-      title: "Personalized Conversations",
-      description: "With an always-updated knowledge base of your listings and property data, the AI delivers tailored recommendations to potential clients.",
-      link: "#personalized-conversations",
-      icon: Building
+      title: "Step 2",
+      content: (
+        <div className="space-y-2">
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">AI Qualification</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">Our AI system automatically calls and qualifies your leads, saving you time and resources.</p>
+        </div>
+      ),
     },
     {
-      title: "Actionable Insights",
-      description: "Gain valuable data on lead preferences and readiness, giving your team the upper hand.",
-      link: "#actionable-insights",
-      icon: BarChart3
+      title: "Step 3",
+      content: (
+        <div className="space-y-2">
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Access Insights</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">Review detailed data insights and focus your attention on warm, qualified leads ready for follow-up.</p>
+        </div>
+      ),
     },
     {
-      title: "Step 1. Upload Leads",
-      description: "Get started by uploading your leads through a simple CSV file or sync directly with your CRM system.",
-      link: "#upload-leads",
-      icon: Upload
+      title: "Step 4",
+      content: (
+        <div className="space-y-2">
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Engage Leads</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">Our AI agent calls new leads as soon as they come in, ensuring no opportunity is missed.</p>
+        </div>
+      ),
     },
     {
-      title: "Step 2. AI Qualification",
-      description: "Our AI system automatically calls and qualifies your leads, saving you time and resources.",
-      link: "#ai-qualification",
-      icon: Upload
+      title: "Step 5",
+      content: (
+        <div className="space-y-2">
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Personalized Conversations</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">With an always-updated knowledge base of your listings and property data, the AI delivers tailored recommendations to potential clients.</p>
+        </div>
+      ),
     },
     {
-      title: "Step 3. Access Insights",
-      description: "Review detailed data insights and focus your attention on warm, qualified leads ready for follow-up.",
-      link: "#access-insights",
-      icon: LineChart
-    }
+      title: "Step 6",
+      content: (
+        <div className="space-y-2">
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Actionable Insights</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">Gain valuable data on lead preferences and readiness, giving your team the upper hand.</p>
+        </div>
+      ),
+    },
   ];
 
   const keyFeatures = [
@@ -226,31 +246,32 @@ export default function LandingPage() {
       </header>
       <main className="flex-1">
         <HeroParallax products={products} />
-        <section
-          className="w-full relative flex items-center justify-center bg-black aspect-video"
-          id="features"
-        >
-          <iframe
-            src="https://player.vimeo.com/video/1059635565?h=ba13b4df50&amp;background=1&amp;autoplay=1&amp;loop=1&amp;controls=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;muted=1&amp;pip=0&amp;speed=0&amp;quality=0&amp;fullscreen=0"
-            title="Feature Video"
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-            allowFullScreen
-            className="w-full h-full"
-
-          />
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-4">
+                Transform Your Real Estate Business with
+              </h2>
+              <FlipWords
+                words={[
+                  "AI-Powered Lead Response",
+                  "24/7 Lead Qualification",
+                  "Smart Property Recommendations",
+                  "Automated Follow-ups",
+                  "Real-time Analytics"
+                ]}
+                duration={3000}
+                className="text-4xl font-bold text-primary"
+              />
+            </div>
+          </div>
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="how-it-works">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               How It Works
             </h2>
-            <HoverEffect
-              items={howItWorksItems.map(item => ({
-                title: item.title,
-                description: item.description,
-                link: item.link
-              }))}
-            />
+            <Timeline data={timelineData} />
           </div>
         </section>
         <section
@@ -261,7 +282,7 @@ export default function LandingPage() {
             <DemoCall onStartCallAction={handleStartCall} onEndCallAction={handleEndCall} />
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="features">
+        {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="features">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Key Features
@@ -278,7 +299,7 @@ export default function LandingPage() {
               ))}
             </BentoGrid>
           </div>
-        </section>
+        </section> */}
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 md:px-6">
             <AnimatedTestimonials testimonials={testimonials} autoplay={true} />

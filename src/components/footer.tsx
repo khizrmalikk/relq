@@ -7,7 +7,7 @@ export function SiteFooter() {
   return (
     <footer className="relative w-full bg-background text-white">
       {/* Newsletter Section */}
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      {/* <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <h2 className="text-3xl font-semibold tracking-tight">Subscribe to our Email Newsletter!</h2>
           <p className="mt-4 text-muted-foreground">
@@ -19,7 +19,7 @@ export function SiteFooter() {
             <Button className="bg-primary hover:bg-primary/90 text-white">Subscribe</Button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Footer */}
       <div className="border-t border-white/10">

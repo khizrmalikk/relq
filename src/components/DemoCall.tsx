@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Upload } from "lucide-react";
 
 const webClient = new RetellWebClient();
 
@@ -23,6 +24,7 @@ const formSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
+  listingsFile: z.any().optional(),
 });
 
 export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) {
@@ -32,6 +34,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +43,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       lastName: "",
       email: "",
       phone: "",
+      listingsFile: undefined,
     },
   });
 
@@ -124,9 +128,34 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     setShowForm(true);
   };
 
+  // Add file validation function
+  const validateFile = (file: File) => {
+    if (!file) return true;
+
+    // Check file type
+    if (!file.type.includes('csv')) {
+      setFileError('Please upload a CSV file');
+      return false;
+    }
+
+    // Check file size (e.g., 5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setFileError('File size should be less than 5MB');
+      return false;
+    }
+
+    setFileError(null);
+    return true;
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setShowForm(false);
     if (selectedScenario) {
+      // If there's a file, you can handle it here
+      if (values.listingsFile) {
+        // Handle file upload logic here
+        console.log('File to upload:', values.listingsFile);
+      }
       await startConversation(selectedScenario);
     }
   };
@@ -191,7 +220,47 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-primary text-white">Start Demo</Button>
+              <FormField
+                control={form.control}
+                name="listingsFile"
+                render={({ field: { onChange, value, ...field } }) => (
+                  <FormItem>
+                    <FormLabel>Upload Listings (CSV)</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept=".csv"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file && validateFile(file)) {
+                              onChange(file);
+                            }
+                          }}
+                          className="hidden"
+                          id="listings-file"
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => document.getElementById('listings-file')?.click()}
+                        >
+                          <Upload className="mr-2 h-4 w-4" />
+                          {value ? value.name : 'Choose CSV File'}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    {fileError && (
+                      <p className="text-sm text-red-500 mt-1">{fileError}</p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full bg-primary text-white">
+                Start Demo
+              </Button>
             </form>
           </Form>
         </DialogContent>
@@ -218,17 +287,17 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                     disabled={isLoading}
                     className="border-white text-white hover:bg-white hover:text-primary transition-colors w-full max-w-md rounded-full font-bold"
                   >
-                    Multilingual Demo
+                    Start Demo
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="outline"
                     size="lg"
                     onClick={() => handleStartDemo("first-time")}
                     disabled={isLoading}
                     className="border-white text-white hover:bg-white hover:text-primary transition-colors w-full max-w-md rounded-full font-bold"
                   >
-                    General Demo
-                  </Button>
+                    Use our demo listings
+                  </Button> */}
                   {/* <Button
                     variant="outline"
                     size="lg"
