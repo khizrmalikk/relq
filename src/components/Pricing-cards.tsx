@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function PricingCards() {
-    const [selectedTab, setSelectedTab] = useState("monthly")
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -18,7 +17,7 @@ export default function PricingCards() {
                     <p className="text-muted-foreground">Choose the plan that&apos;s right for you or your agency</p>
                 </div>
 
-                <Tabs defaultValue="monthly" className="space-y-8" onValueChange={setSelectedTab}>
+                <Tabs defaultValue="monthly" className="space-y-8">
                     <div className="flex justify-center">
                         <TabsList className="grid w-64 grid-cols-2">
                             <TabsTrigger value="monthly">Monthly</TabsTrigger>
