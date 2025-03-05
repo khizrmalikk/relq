@@ -2,17 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Building,
-  MessageSquare,
-  BarChart3,
-  Clock,
-  Database,
-  Bot,
-  Upload,
-  LineChart,
-  Pencil,
-} from "lucide-react";
 import Link from "next/link";
 import {
   Dialog,
@@ -25,11 +14,8 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import { WavyBall } from "@/components/WavyBall";
 import { DemoCall } from "@/components/DemoCall";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
-import { HoverEffect } from "@/components/ui/card-hover-effect";
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { SiteFooter } from "@/components/footer";
 import { FlipWords } from "@/components/ui/flip-words";
 import { Timeline } from "@/components/ui/timeline";
@@ -340,8 +326,7 @@ export default function LandingPage() {
               Enter your email to continue
             </DialogTitle>
             <DialogDescription className="text-muted">
-              Please provide your email address to access the demo. We&apos;ll keep
-              you updated with our latest features.
+              Please provide your email address to access the demo. We&apos;ll help you qualify leads...
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit}>

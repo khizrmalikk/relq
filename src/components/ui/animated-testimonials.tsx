@@ -14,9 +14,11 @@ type Testimonial = {
 export const AnimatedTestimonials = ({
   testimonials,
   autoplay = false,
+  autoplaySpeed = 5000,
 }: {
   testimonials: Testimonial[];
   autoplay?: boolean;
+  autoplaySpeed?: number;
 }) => {
   const [active, setActive] = useState(0);
 
@@ -34,10 +36,12 @@ export const AnimatedTestimonials = ({
 
   useEffect(() => {
     if (autoplay) {
-      const interval = setInterval(handleNext, 5000);
+      const interval = setInterval(() => {
+        handleNext();
+      }, autoplaySpeed);
       return () => clearInterval(interval);
     }
-  }, [autoplay]);
+  }, [autoplaySpeed, handleNext]);
 
   const randomRotateY = () => {
     return Math.floor(Math.random() * 21) - 10;

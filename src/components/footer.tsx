@@ -1,7 +1,5 @@
 import Link from "next/link"
-import { DiscIcon as Discord, Github, Instagram, Linkedin, Twitter } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Github, Instagram, Linkedin, Twitter } from "lucide-react"
 
 export function SiteFooter() {
   return (

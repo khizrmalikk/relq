@@ -23,7 +23,7 @@ const FeedbackForm = ({ userEmail }: FeedbackFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-2xl font-bold">Demo Feedback</h2>
-      
+
       <div className="space-y-4">
         <div>
           <label className="block mb-2">Name</label>
@@ -71,7 +71,7 @@ const FeedbackForm = ({ userEmail }: FeedbackFormProps) => {
             onChange={(e) => setFormData({ ...formData, interested: e.target.checked })}
             className="mr-2"
           />
-          <label>I'm interested in learning more about the full product</label>
+          <label>I&apos;m interested in learning more about the full product</label>
         </div>
 
         <button

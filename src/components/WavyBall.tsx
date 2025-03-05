@@ -5,23 +5,7 @@ import { useSpring } from "framer-motion";
 import { WhiteRectangle } from "@/components/white-rectangle";
 import { MouthAudioVisualizer } from "@/components/mouthAudioVisualiser";
 
-export const WavyBall = ({
-  className,
-  size = 100,
-  isCalling = false,
-  isLoading = false,
-  isSpeaking = false,
-  onClick,
-  ...props
-}: {
-  className?: string;
-  size?: number;
-  isCalling?: boolean;
-  isLoading?: boolean;
-  isSpeaking?: boolean;
-  onClick?: (e: ReactMouseEvent) => void;
-  [key: string]: any;
-}) => {
+export const WavyBall = (props: any) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Ref for the container to compute mouse positions relative to the ball
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,11 +17,11 @@ export const WavyBall = ({
 
 
   // Animate scale on press and speaking state
-  const pressScale = useSpring(isCalling ? 0.9 : 1, {
+  const pressScale = useSpring(props.isCalling ? 0.9 : 1, {
     stiffness: 400,
     damping: 20,
   });
-  const speakingScale = useSpring(isSpeaking ? 1.05 : 1, {
+  const speakingScale = useSpring(props.isSpeaking ? 1.05 : 1, {
     stiffness: 300,
     damping: 10,
   });
@@ -59,14 +43,14 @@ export const WavyBall = ({
 
 
     // Define base positions for the eyes (in pixels).
-    const leftBaseX = 0.35 * size;
-    const leftBaseY = 0.40 * size;
-    const rightBaseX = 0.65 * size;
-    const rightBaseY = 0.40 * size;
+    const leftBaseX = 0.35 * props.size;
+    const leftBaseY = 0.40 * props.size;
+    const rightBaseX = 0.65 * props.size;
+    const rightBaseY = 0.40 * props.size;
 
 
     // Maximum displacement allowed (e.g., 5% of the ball size)
-    const maxOffset = size * 0.05;
+    const maxOffset = props.size * 0.05;
 
 
     // Compute offset for left eye:
@@ -129,11 +113,11 @@ export const WavyBall = ({
     // Set the internal canvas dimensions for high-definition rendering.
     const setCanvasDimensions = () => {
       // Increase the number of pixels for clarity.
-      canvas.width = size * dpr;
-      canvas.height = size * dpr;
+      canvas.width = props.size * dpr;
+      canvas.height = props.size * dpr;
       // Ensure the canvas CSS size stays at the intended dimensions.
-      canvas.style.width = `${size}px`;
-      canvas.style.height = `${size}px`;
+      canvas.style.width = `${props.size}px`;
+      canvas.style.height = `${props.size}px`;
       // Scale the canvas context so that drawing operations use the original coordinate system.
       ctx.scale(dpr, dpr);
     };
@@ -146,8 +130,8 @@ export const WavyBall = ({
 
 
       // Use the full canvas size for drawing.
-      const w = size;
-      const h = size;
+      const w = props.size;
+      const h = props.size;
       const centerX = w / 2;
       const centerY = h / 2;
       const margin = 10; // margin so the ball doesn't touch the border
@@ -255,19 +239,19 @@ export const WavyBall = ({
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [size, isCalling, isLoading, isSpeaking]);
+  }, [props.size, props.isCalling, props.isLoading, props.isSpeaking]);
 
 
   return (
     <div
       ref={containerRef}
-      className={cn("relative select-none", className)}
+      className={cn("relative select-none", props.className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={onClick}
+      onClick={props.onClick}
       style={{
-        width: size,
-        height: size,
+        width: props.size,
+        height: props.size,
         transform: `scale(${pressScale.get() * speakingScale.get()}) ${isHovered ? "scale(1.1)" : "scale(1)"
           }`,
         transition: "transform 0.2s ease-out",
@@ -277,8 +261,8 @@ export const WavyBall = ({
         className="rounded-full"
         ref={canvasRef}
         style={{
-          width: size,
-          height: size,
+          width: props.size,
+          height: props.size,
         }}
       />
       {/*
@@ -287,18 +271,18 @@ export const WavyBall = ({
          The computed offsets are added to these base positions.
      */}
       <WhiteRectangle
-        ballSize={size * 0.7}
+        ballSize={props.size * 0.7}
         style={{
-          top: `${0.40 * size + eyeOffsets.left.y}px`,
-          left: `${0.35 * size + eyeOffsets.left.x}px`,
+          top: `${0.40 * props.size + eyeOffsets.left.y}px`,
+          left: `${0.35 * props.size + eyeOffsets.left.x}px`,
           transform: "translate(-50%, -50%)",
         }}
       />
       <WhiteRectangle
-        ballSize={size * 0.7}
+        ballSize={props.size * 0.7}
         style={{
-          top: `${0.40 * size + eyeOffsets.right.y}px`,
-          left: `${0.65 * size + eyeOffsets.right.x}px`,
+          top: `${0.40 * props.size + eyeOffsets.right.y}px`,
+          left: `${0.65 * props.size + eyeOffsets.right.x}px`,
           transform: "translate(-50%, -50%)",
         }}
       />
@@ -306,8 +290,8 @@ export const WavyBall = ({
        Show the mouth visualizer when either isCalling or isSpeaking is true.
        It will draw a thin white line that animates with a wave when isSpeaking is true.
      */}
-      {(isCalling || isSpeaking) && (
-        <MouthAudioVisualizer size={size} isSpeaking={isSpeaking} active={isCalling} />
+      {(props.isCalling || props.isSpeaking) && (
+        <MouthAudioVisualizer size={props.size} isSpeaking={props.isSpeaking} active={props.isCalling} />
       )}
     </div>
   );
