@@ -253,13 +253,13 @@ export default function LandingPage() {
                     quote: "Automated follow-ups",
                     name: "Feature 3",
                     title: "Never miss a potential client",
-                    image: "/avatars/arab.webp"
+                    image: "/avatars/man.webp"
                   },
                   {
                     quote: "Real-time analytics",
                     name: "Feature 4",
                     title: "Make data-driven decisions",
-                    image: "/avatars/arab.webp"
+                    image: "/avatars/brown.webp"
                   },
                   {
                     quote: "CRM integration",

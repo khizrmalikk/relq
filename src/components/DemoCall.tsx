@@ -282,7 +282,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                     size="lg"
                     onClick={() => handleStartDemo("luxury")}
                     disabled={isLoading}
-                    className="border-white text-white hover:bg-white hover:text-primary-foreground transition-colors w-full max-w-md rounded-full font-bold bg-transparent"
+                    className="border-white text-white hover:bg-white hover:text-primary-foreground transition-colors w-full max-w-md font-bold bg-transparent"
                   >
                     Start Demo
                   </Button>
@@ -327,8 +327,8 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
             isSpeaking={isSpeaking}
             onClick={() => isCallActive ? stopConversation() : handleStartDemo("default")}
             className="cursor-pointer"
-            blur={1}
-            waveOpacity={0.6}
+            blur={0}
+            waveOpacity={1}
             speed="fast"
           />
         </div>

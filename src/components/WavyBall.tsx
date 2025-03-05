@@ -143,7 +143,7 @@ export const WavyBall = ({
       const h = size;
       const centerX = w / 2;
       const centerY = h / 2;
-      const margin = 10; // margin so the ball doesn't touch the border
+      const margin = 0; // margin so the ball doesn't touch the border
       const radius = Math.min(w, h) / 2 - margin;
 
 
