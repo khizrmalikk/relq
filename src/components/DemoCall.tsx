@@ -225,7 +225,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                 name="listingsFile"
                 render={({ field: { onChange, value, ...field } }) => (
                   <FormItem>
-                    <FormLabel>Upload Listings (CSV)</FormLabel>
+                    <FormLabel>Upload Listings - CSV (Optional)</FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <Input
@@ -258,7 +258,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-primary text-white">
+              <Button type="submit" className="w-full bg-primary text-primary-foreground">
                 Start Demo
               </Button>
             </form>

@@ -24,8 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Meteors } from "@/components/ui/meteors";
-import { HeroParallax } from "@/components/ui/hero-parallax";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { WavyBall } from "@/components/WavyBall";
 import { DemoCall } from "@/components/DemoCall";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
@@ -34,48 +33,13 @@ import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { SiteFooter } from "@/components/footer";
 import { FlipWords } from "@/components/ui/flip-words";
 import { Timeline } from "@/components/ui/timeline";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const products = [
-    {
-      title: "Rhea",
-      link: "#demo",
-      thumbnail:
-        "/avatars/arab.webp",
-    },
-    {
-      title: "Tish",
-      link: "#demo",
-      thumbnail:
-        "/avatars/brown.webp",
-    },
-    {
-      title: "Ali",
-      link: "#demo",
-      thumbnail:
-        "/avatars/arabman.webp",
-    },
-    {
-      title: "James",
-      link: "#demo",
-      thumbnail:
-        "/avatars/man.webp",
-    },
-
-    {
-      title: "Kayla",
-      link: "#demo",
-      thumbnail:
-        "/avatars/blonde.webp",
-    },
-
-    // Add more properties to fill out the rows (15 total recommended)
-    // ... more properties ...
-  ];
 
   const testimonials = [
     {
@@ -103,8 +67,16 @@ export default function LandingPage() {
       title: "Step 1",
       content: (
         <div className="space-y-2">
-          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Upload Leads</h4>
-          <p className="text-neutral-600 dark:text-neutral-400">Get started by uploading your leads through a simple CSV file or sync directly with your CRM system.</p>
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Upload Your Leads</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>How It Works:</strong> Users upload a .CSV file with cold leads or sync their CRM with RELQ.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>What Happens Next:</strong> The leads are stored securely, ready for AI-powered outreach.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>Visual:</strong> Upload button & CRM logos (HubSpot, Salesforce, etc.).
+          </p>
         </div>
       ),
     },
@@ -112,8 +84,16 @@ export default function LandingPage() {
       title: "Step 2",
       content: (
         <div className="space-y-2">
-          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">AI Qualification</h4>
-          <p className="text-neutral-600 dark:text-neutral-400">Our AI system automatically calls and qualifies your leads, saving you time and resources.</p>
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">AI Agent Makes Calls</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>How It Works:</strong> RELQ's AI calls leads using Retell.AI, following a tailored script based on real estate needs.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>What Happens Next:</strong> The AI engages with leads, asking key questions about their property preferences, budget, and intent.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>Visual:</strong> Animated AI phone call graphic with speech bubbles.
+          </p>
         </div>
       ),
     },
@@ -121,8 +101,16 @@ export default function LandingPage() {
       title: "Step 3",
       content: (
         <div className="space-y-2">
-          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Access Insights</h4>
-          <p className="text-neutral-600 dark:text-neutral-400">Review detailed data insights and focus your attention on warm, qualified leads ready for follow-up.</p>
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">AI Qualifies the Lead</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>How It Works:</strong> The AI evaluates lead responses, determining whether they are warm leads or cold leads based on set criteria.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>What Happens Next:</strong> RELQ categorizes leads into qualified or unqualified groups for easy follow-up.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>Visual:</strong> Lead funnel graphic (Cold Leads → AI Call → Warm Leads).
+          </p>
         </div>
       ),
     },
@@ -130,8 +118,16 @@ export default function LandingPage() {
       title: "Step 4",
       content: (
         <div className="space-y-2">
-          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Engage Leads</h4>
-          <p className="text-neutral-600 dark:text-neutral-400">Our AI agent calls new leads as soon as they come in, ensuring no opportunity is missed.</p>
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Data & Insights are Collected</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>How It Works:</strong> The AI records key details from the call, such as budget range, location preference, and urgency level.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>What Happens Next:</strong> RELQ compiles a summary for each lead with actionable insights.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>Visual:</strong> Dashboard preview showing lead data (price range, location, lead score).
+          </p>
         </div>
       ),
     },
@@ -139,55 +135,21 @@ export default function LandingPage() {
       title: "Step 5",
       content: (
         <div className="space-y-2">
-          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Personalized Conversations</h4>
-          <p className="text-neutral-600 dark:text-neutral-400">With an always-updated knowledge base of your listings and property data, the AI delivers tailored recommendations to potential clients.</p>
-        </div>
-      ),
-    },
-    {
-      title: "Step 6",
-      content: (
-        <div className="space-y-2">
-          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Actionable Insights</h4>
-          <p className="text-neutral-600 dark:text-neutral-400">Gain valuable data on lead preferences and readiness, giving your team the upper hand.</p>
+          <h4 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Sync with Your CRM & Take Action</h4>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>How It Works:</strong> All data is automatically pushed to your CRM, ready for the sales team.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>What Happens Next:</strong> Agents can view insights, prioritize leads, and schedule warm follow-ups to close deals faster.
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            <strong>Visual:</strong> CRM interface with lead scores and call summaries.
+          </p>
         </div>
       ),
     },
   ];
 
-  const keyFeatures = [
-    {
-      title: "AI-Powered Lead Response",
-      description: "Instant, intelligent engagement with every new lead, 24/7, ensuring no opportunity is missed.",
-      icon: <Bot className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
-      className: "md:col-span-2"
-    },
-    {
-      title: "Real-Time Analytics",
-      description: "Track and analyze lead engagement metrics and conversion rates in real-time.",
-      icon: <BarChart3 className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
-    },
-    {
-      title: "Property Database",
-      description: "Maintain an always-updated database of your listings for accurate recommendations.",
-      icon: <Database className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
-    },
-    {
-      title: "24/7 Availability",
-      description: "Never miss a lead with round-the-clock automated response system.",
-      icon: <Clock className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
-    },
-    // {
-    //   title: "Pre-built and customizable call flows",
-    //   description: "Choose from a variety of pre-built call flows or create your own to suit your business needs.",
-    //   icon: <Pencil className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
-    // },
-    {
-      title: "CRM & Database integration",
-      description: "Sync your leads and listings with your CRM or database for seamless integration.",
-      icon: <Database className="w-6 h-6 text-neutral-600 dark:text-neutral-200" />,
-    },
-  ];
 
   const handleDemoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -210,65 +172,129 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 flex items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-md pt-5 pb-5">
+    <div className="flex flex-col">
+      <header className="px-4 lg:px-6 flex flex-wrap items-center justify-between fixed top-0 left-0 right-0 z-50 backdrop-blur-md pt-5 pb-5">
         <Link className="flex items-center justify-center" href="#">
-          <span className="ml-2 text-2xl font-bold text-white">RELQ.AI</span>
+          <span className="ml-2 text-2xl md:text-3xl font-bold text-primary">RELQ.AI</span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4 text-white"
-            href="#features"
-          >
-            Features
-          </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4 text-white"
-            href="#how-it-works"
-          >
-            How It Works
-          </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4 text-white"
-            href="#demo"
-          >
-            Demo
-          </Link>
-        </nav>
-        <div className="flex gap-4 ml-auto">
-          <button className="px-6 py-2 rounded-full tracking-widest uppercase font-bold bg-primary text-white hover:bg-white hover:text-primary transition duration-200 ml-auto border-none">
-            Try for Free
-          </button>
-          <button className="text-white border border-white px-6 py-2 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-white hover:text-primary transition duration-200 ml-auto">
-            Login
-          </button>
+
+        {/* Mobile menu button - hidden on larger screens */}
+        <button className="block md:hidden ml-auto mr-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        {/* Navigation and buttons container */}
+        <div className="hidden md:flex w-full md:w-auto md:ml-auto items-center flex-col md:flex-row gap-4">
+          <nav className="flex flex-col md:flex-row gap-4 sm:gap-6 w-full md:w-auto">
+
+            <Link
+              className="text-sm font-medium hover:underline underline-offset-4 text-white"
+              href="#how-it-works"
+            >
+              How It Works
+            </Link>
+            <Link
+              className="text-sm font-medium hover:underline underline-offset-4 text-white"
+              href="#demo"
+            >
+              Demo
+            </Link>
+            <Link
+              className="text-sm font-medium hover:underline underline-offset-4 text-white"
+              href="#pricing"
+            >
+              Pricing
+            </Link>
+          </nav>
+
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+            <button className="px-4 md:px-6 py-2 rounded-md tracking-widest uppercase text-sm font-bold bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary transition duration-200 border-none">
+              Try for Free
+            </button>
+            <button className="text-white border border-white px-4 md:px-6 py-2 rounded-md tracking-widest uppercase text-sm font-bold bg-transparent hover:bg-primary hover:text-primary-foreground transition duration-200">
+              Login
+            </button>
+          </div>
         </div>
       </header>
       <main className="flex-1">
-        <HeroParallax products={products} />
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-4">
-                Transform Your Real Estate Business with
-              </h2>
-              <FlipWords
-                words={[
-                  "AI-Powered Lead Response",
-                  "24/7 Lead Qualification",
-                  "Smart Property Recommendations",
-                  "Automated Follow-ups",
-                  "Real-time Analytics"
-                ]}
-                duration={3000}
-                className="text-4xl font-bold text-primary"
-              />
+        <BackgroundGradientAnimation interactive={false} className="absolute flex flex-col justify-center min-h-screen p-4">
+          <div className="flex flex-col p-4 ml-10 z-10">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-4">
+              Transform Your Real Estate Business with
+            </h2>
+            <FlipWords
+              words={[
+                "AI-Powered Lead Response",
+                "24/7 Lead Qualification",
+                "Smart Property Recommendations",
+                "Automated Follow-ups",
+                "Real-time Analytics"
+              ]}
+              duration={3000}
+              className="text-4xl font-bold text-primary mb-4"
+            />
+            <p className="text-xl md:text-xl text-white/80 max-w-3xl mb-8">
+              AI-powered lead qualification for real estate professionals
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="#demo" className="text-white text-center border border-white px-6 py-3 rounded-md tracking-widest uppercase text-sm font-bold bg-transparent hover:bg-primary hover:text-primary-foreground transition duration-200">
+                Try Demo
+              </Link>
             </div>
+          </div>
+        </BackgroundGradientAnimation>
+
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
+          <div className="container mx-auto px-4 md:px-6">
+
+            <InfiniteMovingCards
+              items={[
+                {
+                  quote: "AI-powered lead qualification",
+                  name: "Feature 1",
+                  title: "Automatically qualify leads 24/7",
+                  image: "/avatars/blonde.webp"
+                },
+                {
+                  quote: "Smart property recommendations",
+                  name: "Feature 2",
+                  title: "Match clients with perfect properties",
+                  image: "/avatars/arabman.webp"
+                },
+                {
+                  quote: "Automated follow-ups",
+                  name: "Feature 3",
+                  title: "Never miss a potential client",
+                  image: "/avatars/arab.webp"
+                },
+                {
+                  quote: "Real-time analytics",
+                  name: "Feature 4",
+                  title: "Make data-driven decisions",
+                  image: "/avatars/arab.webp"
+                },
+                {
+                  quote: "CRM integration",
+                  name: "Feature 5",
+                  title: "Seamless workflow with your existing tools",
+                  image: "/avatars/arab.webp"
+                },
+              ]}
+              direction="left"
+              speed="normal"
+              pauseOnHover={true}
+              className="py-4"
+            />
           </div>
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-background" id="how-it-works">
           <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center">
               How It Works
             </h2>
             <Timeline data={timelineData} />
