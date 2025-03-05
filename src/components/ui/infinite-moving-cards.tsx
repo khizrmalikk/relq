@@ -73,7 +73,7 @@ export const InfiniteMovingCards = ({
     }
 
     addAnimation();
-  }, [direction, speed]);
+  });
 
   return (
     <div

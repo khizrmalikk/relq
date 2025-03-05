@@ -15,7 +15,7 @@ export default function PricingCards() {
             <div className="mx-auto max-w-5xl space-y-8">
                 <div className="text-center space-y-4">
                     <h2 className="text-3xl font-bold tracking-tight">Simple, transparent pricing</h2>
-                    <p className="text-muted-foreground">Choose the plan that's right for you or your agency</p>
+                    <p className="text-muted-foreground">Choose the plan that&apos;s right for you or your agency</p>
                 </div>
 
                 <Tabs defaultValue="monthly" className="space-y-8" onValueChange={setSelectedTab}>

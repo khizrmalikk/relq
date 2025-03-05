@@ -51,6 +51,7 @@ export default function ProductInterestForm() {
             toast.error("Something went wrong", {
                 description: "Please try again later.",
             })
+            console.error(error)
         } finally {
             setIsSubmitting(false)
         }
@@ -61,7 +62,7 @@ export default function ProductInterestForm() {
             <div className="mb-6">
                 <h2 className="text-2xl font-bold">Product Interest Form</h2>
                 <p className="text-muted-foreground">
-                    Let us know you're interested in our product. We'll keep you updated on the latest news and releases.
+                    Let us know you&apos;re interested in our product. We&apos;ll keep you updated on the latest news and releases.
                 </p>
             </div>
 
