@@ -72,7 +72,7 @@ export default function LandingPage() {
         <div className="space-y-2">
           <h4 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">AI Agent Makes Calls</h4>
           <p className="text-neutral-600 dark:text-white">
-            <strong>How It Works:</strong> RELQ's AI calls leads using Retell.AI, following a tailored script based on real estate needs.
+            <strong>How It Works:</strong> RELQ&apos;s AI calls leads using Retell.AI, following a tailored script based on real estate needs.
           </p>
           <p className="text-neutral-600 dark:text-white">
             <strong>What Happens Next:</strong> The AI engages with leads, asking key questions about their property preferences, budget, and intent.
@@ -136,11 +136,6 @@ export default function LandingPage() {
     },
   ];
 
-
-  const handleDemoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setDialogOpen(true);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

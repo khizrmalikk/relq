@@ -1,11 +1,28 @@
 "use client";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useRef, useState, MouseEvent as ReactMouseEvent } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSpring } from "framer-motion";
 import { WhiteRectangle } from "@/components/white-rectangle";
 import { MouthAudioVisualizer } from "@/components/mouthAudioVisualiser";
 
-export const WavyBall = (props: any) => {
+export const WavyBall = ({
+  isCalling = false,
+  isSpeaking = false,
+  isLoading = false,
+  size = 100,
+  blur = 0,
+  waveOpacity = 1,
+  speed = "normal",
+  ...props
+}: React.ComponentProps<'div'> & {
+  isCalling?: boolean;
+  isSpeaking?: boolean;
+  isLoading?: boolean;
+  size?: number;
+  blur?: number;
+  waveOpacity?: number;
+  speed?: string;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Ref for the container to compute mouse positions relative to the ball
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,11 +34,11 @@ export const WavyBall = (props: any) => {
 
 
   // Animate scale on press and speaking state
-  const pressScale = useSpring(props.isCalling ? 0.9 : 1, {
+  const pressScale = useSpring(isCalling ? 0.9 : 1, {
     stiffness: 400,
     damping: 20,
   });
-  const speakingScale = useSpring(props.isSpeaking ? 1.05 : 1, {
+  const speakingScale = useSpring(isSpeaking ? 1.05 : 1, {
     stiffness: 300,
     damping: 10,
   });
@@ -31,53 +48,54 @@ export const WavyBall = (props: any) => {
   const [isHovered, setIsHovered] = useState(false);
 
 
-  // Global mouse move handler so that the eyes follow the mouse anywhere on the page.
-  const handleGlobalMouseMove = (e: MouseEvent) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
+  // Move handleGlobalMouseMove inside useEffect
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
 
+      // Calculate mouse position relative to container.
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
-    // Calculate mouse position relative to container.
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+      // Define base positions for the eyes (in pixels).
+      const leftBaseX = 0.35 * size;
+      const leftBaseY = 0.40 * size;
+      const rightBaseX = 0.65 * size;
+      const rightBaseY = 0.40 * size;
 
+      // Maximum displacement allowed (e.g., 5% of the ball size)
+      const maxOffset = size * 0.05;
 
-    // Define base positions for the eyes (in pixels).
-    const leftBaseX = 0.35 * props.size;
-    const leftBaseY = 0.40 * props.size;
-    const rightBaseX = 0.65 * props.size;
-    const rightBaseY = 0.40 * props.size;
+      // Compute offset for left eye:
+      let dxLeft = mouseX - leftBaseX;
+      let dyLeft = mouseY - leftBaseY;
+      const distLeft = Math.sqrt(dxLeft * dxLeft + dyLeft * dyLeft);
+      if (distLeft > maxOffset) {
+        dxLeft = (dxLeft / distLeft) * maxOffset;
+        dyLeft = (dyLeft / distLeft) * maxOffset;
+      }
 
+      // Compute offset for right eye:
+      let dxRight = mouseX - rightBaseX;
+      let dyRight = mouseY - rightBaseY;
+      const distRight = Math.sqrt(dxRight * dxRight + dyRight * dyRight);
+      if (distRight > maxOffset) {
+        dxRight = (dxRight / distRight) * maxOffset;
+        dyRight = (dyRight / distRight) * maxOffset;
+      }
 
-    // Maximum displacement allowed (e.g., 5% of the ball size)
-    const maxOffset = props.size * 0.05;
+      setEyeOffsets({
+        left: { x: dxLeft, y: dyLeft },
+        right: { x: dxRight, y: dyRight },
+      });
+    };
 
-
-    // Compute offset for left eye:
-    let dxLeft = mouseX - leftBaseX;
-    let dyLeft = mouseY - leftBaseY;
-    const distLeft = Math.sqrt(dxLeft * dxLeft + dyLeft * dyLeft);
-    if (distLeft > maxOffset) {
-      dxLeft = (dxLeft / distLeft) * maxOffset;
-      dyLeft = (dyLeft / distLeft) * maxOffset;
-    }
-
-
-    // Compute offset for right eye:
-    let dxRight = mouseX - rightBaseX;
-    let dyRight = mouseY - rightBaseY;
-    const distRight = Math.sqrt(dxRight * dxRight + dyRight * dyRight);
-    if (distRight > maxOffset) {
-      dxRight = (dxRight / distRight) * maxOffset;
-      dyRight = (dyRight / distRight) * maxOffset;
-    }
-
-
-    setEyeOffsets({
-      left: { x: dxLeft, y: dyLeft },
-      right: { x: dxRight, y: dyRight },
-    });
-  };
+    window.addEventListener("mousemove", handleGlobalMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleGlobalMouseMove);
+    };
+  }, [size, isCalling, isSpeaking]);
 
 
   // We still use onMouseEnter and onMouseLeave on the container for scaling effects.
@@ -87,15 +105,6 @@ export const WavyBall = (props: any) => {
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
-
-
-  // Add the global mousemove event listener.
-  useEffect(() => {
-    window.addEventListener("mousemove", handleGlobalMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleGlobalMouseMove);
-    };
-  }, [handleGlobalMouseMove]);
 
 
   useEffect(() => {
@@ -113,11 +122,11 @@ export const WavyBall = (props: any) => {
     // Set the internal canvas dimensions for high-definition rendering.
     const setCanvasDimensions = () => {
       // Increase the number of pixels for clarity.
-      canvas.width = props.size * dpr;
-      canvas.height = props.size * dpr;
+      canvas.width = size * dpr;
+      canvas.height = size * dpr;
       // Ensure the canvas CSS size stays at the intended dimensions.
-      canvas.style.width = `${props.size}px`;
-      canvas.style.height = `${props.size}px`;
+      canvas.style.width = `${size}px`;
+      canvas.style.height = `${size}px`;
       // Scale the canvas context so that drawing operations use the original coordinate system.
       ctx.scale(dpr, dpr);
     };
@@ -130,8 +139,8 @@ export const WavyBall = (props: any) => {
 
 
       // Use the full canvas size for drawing.
-      const w = props.size;
-      const h = props.size;
+      const w = size;
+      const h = size;
       const centerX = w / 2;
       const centerY = h / 2;
       const margin = 10; // margin so the ball doesn't touch the border
@@ -239,30 +248,40 @@ export const WavyBall = (props: any) => {
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [props.size, props.isCalling, props.isLoading, props.isSpeaking]);
+  }, [size, isCalling, isSpeaking]);
 
 
   return (
     <div
+      {...props}
       ref={containerRef}
-      className={cn("relative select-none", props.className)}
-      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
       onClick={props.onClick}
       style={{
-        width: props.size,
-        height: props.size,
+        width: size,
+        height: size,
         transform: `scale(${pressScale.get() * speakingScale.get()}) ${isHovered ? "scale(1.1)" : "scale(1)"
           }`,
         transition: "transform 0.2s ease-out",
+        position: "relative",
+        borderRadius: "50%",
+        backgroundColor: "#4F46E5",
+        overflow: "hidden",
+        filter: `blur(${blur}px)`,
+        opacity: isLoading ? 0.7 : 1,
+        ...props.style,
       }}
+      className={cn("", props.className)}
     >
+      {/* Canvas for the wavy effect */}
       <canvas
-        className="rounded-full"
         ref={canvasRef}
         style={{
-          width: props.size,
-          height: props.size,
+          width: size,
+          height: size,
+          opacity: waveOpacity,
+          animationDuration: speed === "fast" ? "2s" : speed === "slow" ? "6s" : "4s",
         }}
       />
       {/*
@@ -271,18 +290,18 @@ export const WavyBall = (props: any) => {
          The computed offsets are added to these base positions.
      */}
       <WhiteRectangle
-        ballSize={props.size * 0.7}
+        ballSize={size * 0.7}
         style={{
-          top: `${0.40 * props.size + eyeOffsets.left.y}px`,
-          left: `${0.35 * props.size + eyeOffsets.left.x}px`,
+          top: `${0.40 * size + eyeOffsets.left.y}px`,
+          left: `${0.35 * size + eyeOffsets.left.x}px`,
           transform: "translate(-50%, -50%)",
         }}
       />
       <WhiteRectangle
-        ballSize={props.size * 0.7}
+        ballSize={size * 0.7}
         style={{
-          top: `${0.40 * props.size + eyeOffsets.right.y}px`,
-          left: `${0.65 * props.size + eyeOffsets.right.x}px`,
+          top: `${0.40 * size + eyeOffsets.right.y}px`,
+          left: `${0.65 * size + eyeOffsets.right.x}px`,
           transform: "translate(-50%, -50%)",
         }}
       />
@@ -290,8 +309,12 @@ export const WavyBall = (props: any) => {
        Show the mouth visualizer when either isCalling or isSpeaking is true.
        It will draw a thin white line that animates with a wave when isSpeaking is true.
      */}
-      {(props.isCalling || props.isSpeaking) && (
-        <MouthAudioVisualizer size={props.size} isSpeaking={props.isSpeaking} active={props.isCalling} />
+      {(isCalling || isSpeaking) && (
+        <MouthAudioVisualizer
+          size={size}
+          isSpeaking={isSpeaking}
+          active={isCalling}
+        />
       )}
     </div>
   );

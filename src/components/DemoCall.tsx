@@ -31,7 +31,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
   const [isCallActive, setIsCallActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -99,7 +98,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       });
 
       setIsCallActive(true);
-      setActiveScenario(scenario);
       onStartCallAction(scenario);
     } catch (error) {
       console.error("Error starting conversation:", error);
@@ -114,7 +112,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     try {
       await webClient.stopCall();
       setIsCallActive(false);
-      setActiveScenario(null);
       onEndCallAction();
     } catch (error) {
       console.error("Error stopping conversation:", error);

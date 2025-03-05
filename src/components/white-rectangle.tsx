@@ -3,12 +3,11 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 
-interface WhiteRectangleProps {
+interface WhiteRectangleProps extends React.HTMLAttributes<HTMLDivElement> {
   // Provide the ball's size so the rectangle can be proportional.
   ballSize?: number;
   className?: string;
   style?: React.CSSProperties;
-  [key: string]: any;
 }
 
 
