@@ -285,7 +285,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                     size="lg"
                     onClick={() => handleStartDemo("luxury")}
                     disabled={isLoading}
-                    className="border-white text-white hover:bg-white hover:text-primary transition-colors w-full max-w-md rounded-full font-bold"
+                    className="border-white text-white hover:bg-white hover:text-primary-foreground transition-colors w-full max-w-md rounded-full font-bold bg-transparent"
                   >
                     Start Demo
                   </Button>
