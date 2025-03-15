@@ -74,7 +74,7 @@ export default function LandingPage() {
         <div className="space-y-2">
           <h4 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">AI Agent Makes Calls</h4>
           <p className="text-neutral-600 dark:text-white">
-            <strong>How It Works:</strong> RELQ&apos;s AI calls leads using Retell.AI, following a tailored script based on real estate needs.
+            <strong>How It Works:</strong> RELQ&apos;s AI calls leads, following a tailored script based on real estate needs.
           </p>
           <p className="text-neutral-600 dark:text-white">
             <strong>What Happens Next:</strong> The AI engages with leads, asking key questions about their property preferences, budget, and intent.
@@ -161,14 +161,12 @@ export default function LandingPage() {
           <span className="ml-2 text-2xl md:text-3xl font-bold text-primary">RELQ.AI</span>
         </Link>
 
-        {/* Mobile menu button - hidden on larger screens */}
-        <button className="block md:hidden ml-auto mr-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
+        {/* Mobile Try for Free button */}
+        <div className="block md:hidden">
+          <Link href="#demo" className="px-4 py-2 rounded-md tracking-widest uppercase text-sm font-bold bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary transition duration-200 border-none">
+            Try for Free
+          </Link>
+        </div>
 
         {/* Navigation and buttons container */}
         <div className="hidden md:flex w-full md:w-auto md:ml-auto items-center flex-col md:flex-row gap-4">

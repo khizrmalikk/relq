@@ -4,19 +4,37 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { WavyBall } from "@/components/WavyBall";
 import { RetellWebClient } from "retell-client-js-sdk";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Upload } from "lucide-react";
+import { Upload, Clock, CheckCircle, XCircle, BarChart, Loader2 } from "lucide-react";
+import { ProductInterestDialog } from "@/components/ProductInterestDialog";
+import { toast } from "sonner";
 
 const webClient = new RetellWebClient();
 
 interface DemoCallProps {
   onStartCallAction: (scenario: string) => void;
   onEndCallAction: () => void;
+}
+
+interface CallAnalysis {
+  call_summary?: string;
+  user_sentiment?: string;
+  call_successful?: boolean;
+  custom_analysis_data?: any;
+  in_voicemail?: boolean;
+}
+
+interface CallResult {
+  call_id?: string;
+  call_analysis?: CallAnalysis;
+  start_timestamp?: number;
+  end_timestamp?: number;
+  total_duration_seconds?: number;
 }
 
 const formSchema = z.object({
@@ -34,6 +52,12 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
   const [showForm, setShowForm] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [callResult, setCallResult] = useState<CallResult | null>(null);
+  const [showCallResult, setShowCallResult] = useState(false);
+  const [currentCallId, setCurrentCallId] = useState<string | null>(null);
+  const [showInterestDialog, setShowInterestDialog] = useState(false);
+  const [isFetchingCallData, setIsFetchingCallData] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,8 +106,14 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          agent_id: "agent_8f4f42348ef2eb2ae2d7d186a1",
+          agent_id: "agent_24484cda1a99b8b30e7a14d10c",
           scenario: scenario, // Pass scenario to backend if needed
+          vars: {
+            first_name: form.getValues("firstName"),
+            last_name: form.getValues("lastName"),
+            email: form.getValues("email"),
+            phone: form.getValues("phone"),
+          },
         }),
       });
 
@@ -93,15 +123,19 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       }
 
       const data = await response.json();
+      setCurrentCallId(data.call_id);
+      
       await webClient.startCall({
         accessToken: data.access_token,
       });
 
       setIsCallActive(true);
       onStartCallAction(scenario);
+      toast.success("Call started successfully");
     } catch (error) {
       console.error("Error starting conversation:", error);
       setIsCallActive(false);
+      toast.error("Failed to start the call. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -113,11 +147,171 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       await webClient.stopCall();
       setIsCallActive(false);
       onEndCallAction();
+      toast.success("Call ended successfully");
+      
+      // Fetch call data after ending the call
+      if (currentCallId) {
+        // Add a small delay to ensure the call has been processed by Retell
+        setTimeout(() => {
+          fetchCallData(currentCallId);
+        }, 2000); // 2 second delay
+      }
     } catch (error) {
       console.error("Error stopping conversation:", error);
+      toast.error("There was an issue ending the call.");
+      setIsCallActive(false); // Force state update even if error
+      onEndCallAction();
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchCallData = async (callId: string) => {
+    setIsFetchingCallData(true);
+    try {
+      console.log("Fetching call data for ID:", callId);
+      const response = await fetch(`/api/call/${callId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error fetching call data (${response.status}):`, errorText);
+        throw new Error(`Error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log("Call data received:", data);
+      
+      // Calculate total duration in seconds
+      let totalDurationSeconds = 0;
+      if (data.start_timestamp && data.end_timestamp) {
+        totalDurationSeconds = Math.round((data.end_timestamp - data.start_timestamp) / 1000);
+      }
+      
+      const callResultData = {
+        ...data,
+        total_duration_seconds: totalDurationSeconds
+      };
+      
+      setCallResult(callResultData);
+      setShowCallResult(true);
+      
+      // Send email with call summary
+      await sendEmailSummary(callResultData);
+      
+    } catch (error) {
+      console.error("Error fetching call data:", error);
+      toast.error("Could not retrieve call analysis. We'll show a simplified summary.");
+      
+      // Show a simplified call result with error information
+      const fallbackResult = {
+        call_id: callId,
+        call_analysis: {
+          call_summary: "We couldn't retrieve the full call analysis. Your call was completed, but the analysis data is unavailable at this time."
+        }
+      };
+      
+      setCallResult(fallbackResult);
+      setShowCallResult(true);
+      
+      // Still try to send email with basic information
+      await sendEmailSummary(fallbackResult);
+    } finally {
+      setIsFetchingCallData(false);
+    }
+  };
+
+  const sendEmailSummary = async (callData: CallResult) => {
+    setIsSendingEmail(true);
+    try {
+      const formValues = form.getValues();
+      
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          callSummary: callData.call_analysis?.call_summary,
+          callDuration: callData.total_duration_seconds ? formatDuration(callData.total_duration_seconds) : undefined,
+          callId: callData.call_id
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error sending email (${response.status}):`, errorText);
+        throw new Error(`Error: ${response.status} - ${errorText}`);
+      }
+      
+      console.log('Email sent successfully');
+      toast.success("Call summary sent to your email");
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast.error("We couldn't send your call summary email. Please check your email address.");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleCallResultClose = () => {
+    setShowCallResult(false);
+    // Show the interest dialog after closing the call summary
+    setShowInterestDialog(true);
+  };
+  
+  const handleInterestSubmit = async (data: any) => {
+    try {
+      // Save user data to database only if they've given consent or shown interest
+      if (data.marketingConsent || data.productInterest) {
+        const response = await fetch('/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...data,
+            callId: callResult?.call_id,
+            callDuration: callResult?.total_duration_seconds,
+            callSummary: callResult?.call_analysis?.call_summary,
+            call_analysis: {
+              user_sentiment: callResult?.call_analysis?.user_sentiment,
+              call_successful: callResult?.call_analysis?.call_successful
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Error saving user data (${response.status}):`, errorText);
+          throw new Error(`Error: ${response.status} - ${errorText}`);
+        }
+        
+        console.log('User data saved successfully');
+        
+        if (data.productInterest) {
+          toast.success("Thanks for your interest! Our team will be in touch soon.");
+        } else if (data.marketingConsent) {
+          toast.success("Thanks! You've been added to our mailing list.");
+        }
+      }
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      toast.error("There was an error processing your request.");
+    }
+  };
+
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   const handleStartDemo = (scenario: string) => {
@@ -263,6 +457,123 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         </DialogContent>
       </Dialog>
 
+      {/* Call Result Dialog */}
+      <Dialog open={showCallResult} onOpenChange={setShowCallResult}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle>Call Summary</DialogTitle>
+            <DialogDescription>
+              Here's an analysis of your recent conversation
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {isFetchingCallData && (
+              <div className="flex flex-col items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+                <p className="text-sm text-muted-foreground">Analyzing your call...</p>
+              </div>
+            )}
+            
+            {!isFetchingCallData && (
+              <>
+                {/* Call Duration */}
+                {callResult?.total_duration_seconds && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <div>
+                      <h4 className="font-medium">Call Duration</h4>
+                      <p>{formatDuration(callResult.total_duration_seconds)}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Call Success */}
+                {callResult?.call_analysis?.call_successful !== undefined && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    {callResult.call_analysis.call_successful ? (
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    ) : (
+                      <XCircle className="h-5 w-5 text-red-500" />
+                    )}
+                    <div>
+                      <h4 className="font-medium">Call Outcome</h4>
+                      <p>{callResult.call_analysis.call_successful ? "Successful" : "Unsuccessful"}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* User Sentiment */}
+                {callResult?.call_analysis?.user_sentiment && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <BarChart className="h-5 w-5 text-primary" />
+                    <div>
+                      <h4 className="font-medium">Lead Sentiment</h4>
+                      <p>{callResult.call_analysis.user_sentiment}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Call Summary */}
+                {callResult?.call_analysis?.call_summary && (
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <h4 className="font-medium mb-2">Call Summary</h4>
+                    <p className="text-sm">{callResult.call_analysis.call_summary}</p>
+                  </div>
+                )}
+                
+                {/* Fallback message if no analysis data is available */}
+                {!callResult?.call_analysis?.call_summary && 
+                 !callResult?.call_analysis?.user_sentiment && 
+                 callResult?.call_analysis?.call_successful === undefined && (
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <h4 className="font-medium mb-2">Call Completed</h4>
+                    <p className="text-sm">
+                      Your call has been completed successfully. The detailed analysis is not available at this time.
+                      This might be because the call just ended and the analysis is still being processed.
+                    </p>
+                  </div>
+                )}
+                
+                {/* Email status */}
+                {isSendingEmail && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <p className="text-sm">Sending summary to your email...</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              onClick={handleCallResultClose}
+              className="w-full"
+              disabled={isFetchingCallData || isSendingEmail}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Product Interest Dialog */}
+      <ProductInterestDialog
+        open={showInterestDialog}
+        onOpenChange={setShowInterestDialog}
+        userData={{
+          firstName: form.getValues("firstName"),
+          lastName: form.getValues("lastName"),
+          email: form.getValues("email"),
+          phone: form.getValues("phone"),
+          callId: callResult?.call_id,
+          callDuration: callResult?.total_duration_seconds,
+          callSummary: callResult?.call_analysis?.call_summary
+        }}
+        onSubmit={handleInterestSubmit}
+      />
+
       <div className="grid grid-cols-3 gap-8">
         <div className="col-span-2">
           <div className="flex flex-col space-y-8">
@@ -284,26 +595,15 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                     disabled={isLoading}
                     className="border-white text-white hover:bg-white hover:text-primary-foreground transition-colors w-full max-w-md font-bold bg-transparent"
                   >
-                    Start Demo
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Preparing Demo...
+                      </>
+                    ) : (
+                      "Start Demo"
+                    )}
                   </Button>
-                  {/* <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => handleStartDemo("first-time")}
-                    disabled={isLoading}
-                    className="border-white text-white hover:bg-white hover:text-primary transition-colors w-full max-w-md rounded-full font-bold"
-                  >
-                    Use our demo listings
-                  </Button> */}
-                  {/* <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => handleStartDemo("investment")}
-                    disabled={isLoading}
-                    className="border-white text-white hover:bg-white hover:text-primary transition-colors w-full max-w-md rounded-full font-bold"
-                  >
-                    Investment Property Demo
-                  </Button> */}
                 </>
               ) : (
                 <Button
@@ -313,7 +613,14 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   disabled={isLoading}
                   className="w-full max-w-md"
                 >
-                  End Call
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Ending Call...
+                    </>
+                  ) : (
+                    "End Call"
+                  )}
                 </Button>
               )}
             </div>
@@ -321,12 +628,12 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         </div>
         <div className="flex items-center justify-center">
           <WavyBall
-            size={200}
+            size={typeof window !== 'undefined' && window.innerWidth < 640 ? 100 : 200}
             isCalling={isCallActive}
             isLoading={isLoading}
             isSpeaking={isSpeaking}
             onClick={() => isCallActive ? stopConversation() : handleStartDemo("default")}
-            className="cursor-pointer"
+            className="cursor-pointer w-[150px] sm:w-[200px] h-[150px] sm:h-[200px]"
             blur={0}
             waveOpacity={1}
             speed="fast"

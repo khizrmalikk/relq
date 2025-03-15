@@ -13,10 +13,11 @@ export async function POST(
     request: Request,
 ) {
     try {
-        const { agent_id } = await request.json()
+        const { agent_id, vars } = await request.json()
 
         const createCallResponse = await retellClient.call.createWebCall({
             agent_id: agent_id,
+            retell_llm_dynamic_variables: vars,
         });
 
         return NextResponse.json(createCallResponse);

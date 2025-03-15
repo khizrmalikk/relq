@@ -14,43 +14,43 @@ export default function PricingCards() {
             <div className="mx-auto max-w-5xl space-y-8">
                 <div className="text-center space-y-4">
                     <h2 className="text-3xl font-bold tracking-tight">Simple, transparent pricing</h2>
-                    <p className="text-muted-foreground">Choose the plan that&apos;s right for you or your agency</p>
+                    <p className="text-white">Choose the plan that&apos;s right for you or your agency</p>
                 </div>
 
                 <Tabs defaultValue="monthly" className="space-y-8">
                     <div className="flex justify-center">
                         <TabsList className="grid w-64 grid-cols-2">
-                            <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                            <TabsTrigger value="onthego">On the Go</TabsTrigger>
+                            <TabsTrigger value="monthly">For Agents</TabsTrigger>
+                            <TabsTrigger value="onthego">For Agencies</TabsTrigger>
                         </TabsList>
                     </div>
 
                     <TabsContent value="monthly" className="space-y-4">
                         <div className="grid gap-6 md:grid-cols-2">
-                            {/* Agent for Agents Card */}
+                            {/* Basic Plan for Individual Agents */}
                             <Card className="flex flex-col group transition-colors duration-300 hover:bg-primary hover:text-primary-foreground">
                                 <CardHeader className="flex flex-col space-y-1.5">
-                                    <CardTitle className="text-2xl">Agent for Agents</CardTitle>
+                                    <CardTitle className="text-2xl">Basic Agent Plan</CardTitle>
                                     <CardDescription className="group-hover:text-primary-foreground/80">
-                                        Perfect for individual professionals
+                                        Essential calling for individual agents
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-1">
                                     <div className="mb-6">
-                                        <span className="text-4xl font-bold">$29</span>
-                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80">/month</span>
+                                        <span className="text-4xl font-bold">299</span>
+                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        Ideal for individuals making up to 50 calls per day.
+                                        1 hour of AI-powered calls per month for individual real estate agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Up to 50 calls per day</span>
+                                            <span>1 hour of calls per month</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Basic analytics</span>
+                                            <span>Basic lead qualification</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
@@ -69,33 +69,33 @@ export default function PricingCards() {
                                 </CardFooter>
                             </Card>
 
-                            {/* Agent for Agencies Card */}
+                            {/* Premium Plan for Individual Agents */}
                             <Card className="flex flex-col group transition-colors duration-300 hover:bg-primary hover:text-primary-foreground">
                                 <CardHeader className="flex flex-col space-y-1.5">
                                     <div className="flex items-center justify-between">
-                                        <CardTitle className="text-2xl">Agent for Agencies</CardTitle>
+                                        <CardTitle className="text-2xl">Premium Agent Plan</CardTitle>
                                         <span className="rounded-full bg-primary px-3 py-1 text-xs text-primary-foreground">Popular</span>
                                     </div>
                                     <CardDescription className="group-hover:text-primary-foreground/80">
-                                        Designed for growing agencies
+                                        Enhanced calling for serious agents
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-1">
                                     <div className="mb-6">
-                                        <span className="text-4xl font-bold">$99</span>
-                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80">/month</span>
+                                        <span className="text-4xl font-bold">499</span>
+                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        Perfect for agencies making up to 500 calls per day.
+                                        2 hours of AI-powered calls per month for ambitious real estate agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Up to 500 calls per day</span>
+                                            <span>2 hours of calls per month</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Advanced analytics dashboard</span>
+                                            <span>Advanced lead qualification</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
@@ -103,11 +103,11 @@ export default function PricingCards() {
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>5 user accounts</span>
+                                            <span>Detailed call analytics</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Custom integrations</span>
+                                            <span>CRM integration</span>
                                         </li>
                                     </ul>
                                 </CardContent>
@@ -125,38 +125,38 @@ export default function PricingCards() {
 
                     <TabsContent value="onthego" className="space-y-4">
                         <div className="grid gap-6 md:grid-cols-2">
-                            {/* Pay-per-minute with Agent for Agents */}
+                            {/* Basic Plan for Agencies */}
                             <Card className="flex flex-col group transition-colors duration-300 hover:bg-primary hover:text-primary-foreground">
                                 <CardHeader className="flex flex-col space-y-1.5">
-                                    <CardTitle className="text-2xl">Basic Agent</CardTitle>
+                                    <CardTitle className="text-2xl">Basic Agency Plan</CardTitle>
                                     <CardDescription className="group-hover:text-primary-foreground/80">
-                                        Pay only for what you use
+                                        Essential calling for your entire team
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-1">
                                     <div className="mb-6">
-                                        <span className="text-4xl font-bold">$0.05</span>
-                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80">/minute</span>
+                                        <span className="text-4xl font-bold">1,249</span>
+                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        Perfect for occasional use with no commitments.
+                                        1 hour of AI-powered calls per month for agencies with 8-12 agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Pay as you go</span>
+                                            <span>1 hour of calls per month per agent</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Basic features</span>
+                                            <span>Supports 8-12 agent accounts</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Email support</span>
+                                            <span>Team analytics dashboard</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>No monthly commitment</span>
+                                            <span>Email & chat support</span>
                                         </li>
                                     </ul>
                                 </CardContent>
@@ -167,47 +167,47 @@ export default function PricingCards() {
                                 </CardFooter>
                             </Card>
 
-                            {/* Pay-per-minute with Agent for Agencies */}
+                            {/* Premium Plan for Agencies */}
                             <Card className="flex flex-col group transition-colors duration-300 hover:bg-primary hover:text-primary-foreground">
                                 <CardHeader className="flex flex-col space-y-1.5">
                                     <div className="flex items-center justify-between">
-                                        <CardTitle className="text-2xl">Premium Agent</CardTitle>
+                                        <CardTitle className="text-2xl">Premium Agency Plan</CardTitle>
                                         <span className="rounded-full bg-primary px-3 py-1 text-xs text-primary-foreground">
                                             Best Value
                                         </span>
                                     </div>
                                     <CardDescription className="group-hover:text-primary-foreground/80">
-                                        Advanced features, pay as you go
+                                        Enhanced calling for high-performance agencies
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-1">
                                     <div className="mb-6">
-                                        <span className="text-4xl font-bold">$0.08</span>
-                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80">/minute</span>
+                                        <span className="text-4xl font-bold">2,299</span>
+                                        <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        Premium features with pay-as-you-go flexibility.
+                                        2 hours of AI-powered calls per month for agencies with 8-12 agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Pay as you go</span>
+                                            <span>2 hours of calls per month per agent</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Advanced AI capabilities</span>
+                                            <span>Supports 8-12 agent accounts</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Priority support</span>
+                                            <span>Advanced team analytics</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Usage analytics</span>
+                                            <span>Priority support with dedicated manager</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>Volume discounts available</span>
+                                            <span>CRM & property management integrations</span>
                                         </li>
                                     </ul>
                                 </CardContent>

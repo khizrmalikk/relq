@@ -58,9 +58,9 @@ export default function ProductInterestForm() {
     }
 
     return (
-        <div className="w-full max-w-5xl mx-auto border border-border rounded-lg p-6 bg-transparent backdrop-blur-sm">
+        <div className="w-full max-w-5xl mx-auto rounded-lg p-6 bg-transparent backdrop-blur-sm">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold">Product Interest Form</h2>
+                <h2 className="text-2xl font-bold">You Interested?</h2>
                 <p className="text-muted-foreground">
                     Let us know you&apos;re interested in our product. We&apos;ll keep you updated on the latest news and releases.
                 </p>

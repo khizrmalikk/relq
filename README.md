@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RELQ.AI - Real Estate Lead Qualification AI
+
+RELQ.AI is an AI-powered solution for real estate agents and agencies to automate lead qualification and follow-up. The platform uses conversational AI to engage with potential leads, qualify them, and provide valuable insights to agents.
+
+## Features
+
+- **AI-Powered Calls**: Engage with leads using natural language conversations
+- **Call Analysis**: Get detailed summaries and sentiment analysis after each call
+- **Email Follow-up**: Automatically send call summaries to leads
+- **User Data Collection**: Capture lead information and preferences
+- **CRM Integration**: Store lead data for future marketing and sales activities
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Supabase
+- **AI Integration**: Retell API for voice conversations
+- **Email**: Nodemailer for email delivery
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 16.x or higher
+- npm or yarn
+- Supabase account
+- Retell API account
+- SMTP server for email delivery
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/real-estate-agent.git
+   cd real-estate-agent
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. Create a `.env.local` file based on `.env.example`:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Update the `.env.local` file with your API keys and configuration.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Set up Supabase tables:
+   - Create a `users` table with fields for user information
+   - Create a `call_records` table to store call data
+   - Create an `interest_details` table for product interest information
+   - Create an `email_logs` table to track email communications
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+7. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Database Schema
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Users Table
+- `id` (UUID, primary key)
+- `first_name` (text)
+- `last_name` (text)
+- `email` (text, unique)
+- `phone` (text, optional)
+- `marketing_consent` (boolean)
+- `product_interest` (boolean)
+- `created_at` (timestamp with timezone)
+- `updated_at` (timestamp with timezone)
+
+### Call Records Table
+- `id` (UUID, primary key)
+- `user_id` (UUID, foreign key to users.id)
+- `call_id` (text)
+- `call_duration` (integer, seconds)
+- `call_summary` (text)
+- `call_sentiment` (text)
+- `call_successful` (boolean)
+- `created_at` (timestamp with timezone)
+
+### Interest Details Table
+- `id` (UUID, primary key)
+- `user_id` (UUID, foreign key to users.id)
+- `company_size` (text)
+- `lead_volume` (text)
+- `current_crm` (text)
+- `additional_info` (text)
+- `created_at` (timestamp with timezone)
+
+### Email Logs Table
+- `id` (UUID, primary key)
+- `user_id` (UUID, foreign key to users.id)
+- `email_type` (text)
+- `sent_at` (timestamp with timezone)
+- `message_id` (text)
+- `call_id` (text, optional)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
