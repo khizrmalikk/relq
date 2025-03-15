@@ -7,10 +7,10 @@ const retellClient = new Retell({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { callId: string } }
+  context: { params: { callId: string } }
 ) {
   try {
-    const { callId } = params;
+    const { callId } = context.params;
     
     if (!callId) {
       return NextResponse.json(
