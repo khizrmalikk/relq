@@ -11,7 +11,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "RELQ.AI",
+  title: "QAULI",
   description: "AI Agent for your lead qualification",
 };
 

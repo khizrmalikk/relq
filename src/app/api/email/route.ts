@@ -1,23 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import nodemailer from 'nodemailer';
+import { Resend } from "resend";
+import { createClient } from "@/lib/supabase";
 
-// Create a transporter for sending emails
-// For production, you would use a service like SendGrid, Mailgun, or Resend
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.example.com',
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASSWORD || '',
-  },
-});
+// Initialize Resend with API key
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, firstName, lastName, callSummary, callDuration, callId } = await request.json();
-    
+    const body = await request.json();
+    const { email, firstName, lastName, callSummary, callDuration, callId } = body;
+
     if (!email) {
       return NextResponse.json(
         { error: "Email is required" },
@@ -25,63 +17,90 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send email
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"RELQ.AI" <noreply@example.com>',
+    // Send email with HTML template
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || "QAULI <onboarding@resend.dev>",
       to: email,
-      subject: 'Your AI Call Summary',
+      subject: "Your QAULI Call Summary",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Hello ${firstName},</h2>
-          <p>Thank you for your recent conversation with our AI assistant.</p>
-          
-          <div style="background-color: #f7f7f7; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <h3 style="margin-top: 0;">Call Summary</h3>
-            <p>${callSummary || "Your call has been completed successfully."}</p>
-            
-            ${callDuration ? `<p><strong>Call Duration:</strong> ${callDuration}</p>` : ''}
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #333;">Your Call Summary</h1>
           </div>
           
-          <p>If you have any questions or would like to schedule a follow-up with a human agent, please don't hesitate to reply to this email.</p>
+          <p>Hello ${firstName || "there"},</p>
           
-          <p>Best regards,<br>Your Real Estate Team</p>
+          <p>Thank you for trying out QAULI! Here's a summary of your recent call:</p>
+          
+          ${callDuration ? `<p><strong>Call Duration:</strong> ${callDuration}</p>` : ''}
+          
+          ${callSummary ? `
+          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #333;">Call Summary</h3>
+            <p style="margin-bottom: 0;">${callSummary}</p>
+          </div>
+          ` : ''}
+          
+          <p>Want to learn more about how QAULI can help your real estate business?</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://qauli.com/#pricing" style="background-color: #4a90e2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Our Pricing</a>
+          </div>
+          
+          <p>If you have any questions, feel free to reply to this email.</p>
+          
+          <p>Best regards,<br>The QAULI Team</p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 12px; color: #777; text-align: center;">
+            <p>© 2024 QAULI. All rights reserved.</p>
+          </div>
         </div>
       `,
     });
 
-    // Record email sent in Supabase (optional)
-    if (email) {
-      // Find user by email
-      const { data: user, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', email)
-        .single();
-      
-      if (!userError && user) {
-        // Add email sent record
-        const { error: emailError } = await supabase
-          .from('email_logs')
-          .insert({
-            user_id: user.id,
-            email_type: 'call_summary',
-            sent_at: new Date().toISOString(),
-            message_id: info.messageId,
-            call_id: callId || null
-          });
-        
-        if (emailError) {
-          console.error("Error logging email:", emailError);
-          // Continue execution - we don't want to fail the whole request if just the email log fails
-        }
-      }
+    if (error) {
+      console.error("Error sending email:", error);
+      return NextResponse.json(
+        { error: "Failed to send email" },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true, messageId: info.messageId });
+    // Log the email in Supabase if we have a user
+    try {
+      const supabase = createClient();
+      
+      // Find the user by email
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("email", email)
+        .single();
+      
+      if (userData && !userError) {
+        // Log the email in the email_logs table
+        await supabase.from("email_logs").insert({
+          user_id: userData.id,
+          email_type: "call_summary",
+          sent_at: new Date().toISOString(),
+          message_id: data?.id || null,
+          call_id: callId || null
+        });
+      }
+    } catch (dbError) {
+      // Just log the error but don't fail the request
+      console.error("Error logging email in database:", dbError);
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Email sent successfully",
+      id: data?.id 
+    });
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error in email API:", error);
     return NextResponse.json(
-      { error: "Failed to send email", details: error instanceof Error ? error.message : String(error) },
+      { error: "Failed to process request", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

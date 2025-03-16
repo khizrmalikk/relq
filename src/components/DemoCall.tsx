@@ -170,6 +170,11 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     setIsFetchingCallData(true);
     try {
       console.log("Fetching call data for ID:", callId);
+      
+      if (!callId) {
+        throw new Error("Call ID is missing");
+      }
+      
       const response = await fetch(`/api/call/${callId}`, {
         method: "GET",
         headers: {
@@ -178,7 +183,8 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorData = await response.json().catch(() => null);
+        const errorText = errorData ? JSON.stringify(errorData) : await response.text();
         console.error(`Error fetching call data (${response.status}):`, errorText);
         throw new Error(`Error: ${response.status} - ${errorText}`);
       }
@@ -230,6 +236,14 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     try {
       const formValues = form.getValues();
       
+      if (!formValues.email) {
+        console.error('Cannot send email: Email address is missing');
+        toast.error("Could not send email summary: Email address is missing");
+        return;
+      }
+      
+      console.log('Sending email summary to:', formValues.email);
+      
       const response = await fetch('/api/email', {
         method: 'POST',
         headers: {
@@ -246,12 +260,14 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorData = await response.json().catch(() => null);
+        const errorText = errorData ? JSON.stringify(errorData) : await response.text();
         console.error(`Error sending email (${response.status}):`, errorText);
         throw new Error(`Error: ${response.status} - ${errorText}`);
       }
       
-      console.log('Email sent successfully');
+      const responseData = await response.json();
+      console.log('Email sent successfully, ID:', responseData.id);
       toast.success("Call summary sent to your email");
     } catch (error) {
       console.error('Error sending email:', error);

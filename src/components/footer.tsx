@@ -26,7 +26,7 @@ export function SiteFooter() {
             {/* Brand */}
             <div>
               <Link href="/" className="text-2xl font-semibold">
-                RELQ.AI
+                QAULI
               </Link>
             </div>
 
@@ -68,7 +68,7 @@ export function SiteFooter() {
 
           {/* Bottom Links */}
           <div className="mt-12 flex flex-col items-center justify-between gap-y-6 border-t border-white/10 pt-8 sm:flex-row">
-            <p className="text-sm text-white/60">© {new Date().getFullYear()} RELQ.AI. All Rights Reserved</p>
+            <p className="text-sm text-white/60">© {new Date().getFullYear()} QAULI. All Rights Reserved</p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/60">
               <Link href="/contact" className="hover:text-white">
                 Contact Us

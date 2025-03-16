@@ -7,11 +7,10 @@ const retellClient = new Retell({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ callId: string }> }
+  { params }: { params: { callId: string } }
 ) {
   try {
-    // Await the params object before accessing its properties
-    const { callId } = await params;
+    const { callId } = params;
     
     if (!callId) {
       return NextResponse.json(
@@ -26,36 +25,52 @@ export async function GET(
       // Use the Retell SDK to get call details
       const callData = await retellClient.call.retrieve(callId);
       
+      if (!callData) {
+        throw new Error("No data returned from Retell API");
+      }
+      
+      console.log("Call data retrieved successfully via SDK");
       return NextResponse.json(callData);
     } catch (retellError) {
-      console.error("Retell API error:", retellError);
+      console.error("Retell SDK error:", retellError);
       
       // Fallback to direct API call if SDK method fails
-      const response = await fetch(`https://api.retellai.com/v1/calls/${callId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.RETELL}`,
-        },
-      });
+      console.log("Falling back to direct API call");
+      
+      try {
+        const response = await fetch(`https://api.retellai.com/v1/calls/${callId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.RETELL}`,
+          },
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Retell API error (${response.status}):`, errorText);
-        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Retell API error (${response.status}):`, errorText);
+          
+          return NextResponse.json(
+            { error: `Error from Retell API: ${response.status}`, details: errorText },
+            { status: response.status }
+          );
+        }
+
+        const data = await response.json();
+        console.log("Call data retrieved successfully via direct API");
+        return NextResponse.json(data);
+      } catch (fetchError) {
+        console.error("Error in direct API call:", fetchError);
         return NextResponse.json(
-          { error: `Error from Retell API: ${response.status}` },
-          { status: response.status }
+          { error: "Failed to fetch call data from Retell API", details: fetchError instanceof Error ? fetchError.message : String(fetchError) },
+          { status: 500 }
         );
       }
-
-      const data = await response.json();
-      return NextResponse.json(data);
     }
   } catch (error) {
-    console.error("Error fetching call data:", error);
+    console.error("Error in call API endpoint:", error);
     return NextResponse.json(
-      { error: "Failed to fetch call data", details: error instanceof Error ? error.message : String(error) },
+      { error: "Failed to process request", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

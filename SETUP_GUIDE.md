@@ -1,4 +1,4 @@
-# Setup Guide for RELQ.AI
+# Setup Guide for QAULI
 
 This guide will help you fix the issues with Supabase and email functionality in your application.
 
@@ -28,7 +28,7 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER=your.actual.email@gmail.com
 SMTP_PASSWORD=your-app-password
-EMAIL_FROM="RELQ.AI <your.actual.email@gmail.com>"
+EMAIL_FROM="QAULI <your.actual.email@gmail.com>"
 ```
 
 Note: If you're using Gmail with 2FA enabled, you'll need to create an App Password. See: https://support.google.com/accounts/answer/185833

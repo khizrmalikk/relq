@@ -1,6 +1,6 @@
-# RELQ.AI - Real Estate Lead Qualification AI
+# QAULI - Real Estate Lead Qualification AI
 
-RELQ.AI is an AI-powered solution for real estate agents and agencies to automate lead qualification and follow-up. The platform uses conversational AI to engage with potential leads, qualify them, and provide valuable insights to agents.
+QAULI is an AI-powered solution for real estate agents and agencies to automate lead qualification and follow-up. The platform uses conversational AI to engage with potential leads, qualify them, and provide valuable insights to agents.
 
 ## Features
 

@@ -57,7 +57,7 @@ export default function LandingPage() {
         <div className="space-y-2">
           <h4 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Upload Your Leads</h4>
           <p className="text-neutral-600 dark:text-white">
-            <strong>How It Works:</strong> Users upload a .CSV file with cold leads or sync their CRM with RELQ.
+            <strong>How It Works:</strong> Users upload a .CSV file with cold leads or sync their CRM with QAULI.
           </p>
           <p className="text-neutral-600 dark:text-white">
             <strong>What Happens Next:</strong> The leads are stored securely, ready for AI-powered outreach.
@@ -74,7 +74,7 @@ export default function LandingPage() {
         <div className="space-y-2">
           <h4 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">AI Agent Makes Calls</h4>
           <p className="text-neutral-600 dark:text-white">
-            <strong>How It Works:</strong> RELQ&apos;s AI calls leads, following a tailored script based on real estate needs.
+            <strong>How It Works:</strong> QAULI&apos;s AI calls leads, following a tailored script based on real estate needs.
           </p>
           <p className="text-neutral-600 dark:text-white">
             <strong>What Happens Next:</strong> The AI engages with leads, asking key questions about their property preferences, budget, and intent.
@@ -94,7 +94,7 @@ export default function LandingPage() {
             <strong>How It Works:</strong> The AI evaluates lead responses, determining whether they are warm leads or cold leads based on set criteria.
           </p>
           <p className="text-neutral-600 dark:text-white">
-            <strong>What Happens Next:</strong> RELQ categorizes leads into qualified or unqualified groups for easy follow-up.
+            <strong>What Happens Next:</strong> QAULI categorizes leads into qualified or unqualified groups for easy follow-up.
           </p>
           {/* <p className="text-neutral-600 dark:text-white">
             <strong>Visual:</strong> Lead funnel graphic (Cold Leads → AI Call → Warm Leads).
@@ -111,7 +111,7 @@ export default function LandingPage() {
             <strong>How It Works:</strong> The AI records key details from the call, such as budget range, location preference, and urgency level.
           </p>
           <p className="text-neutral-600 dark:text-white">
-            <strong>What Happens Next:</strong> RELQ compiles a summary for each lead with actionable insights.
+            <strong>What Happens Next:</strong> QAULI compiles a summary for each lead with actionable insights.
           </p>
           {/* <p className="text-neutral-600 dark:text-white">
             <strong>Visual:</strong> Dashboard preview showing lead data (price range, location, lead score).
@@ -158,7 +158,7 @@ export default function LandingPage() {
     <div className="flex flex-col">
       <header className="px-4 lg:px-6 flex flex-wrap items-center justify-between fixed top-0 left-0 right-0 z-50 backdrop-blur-md pt-5 pb-5">
         <Link className="flex items-center justify-center" href="#">
-          <span className="ml-2 text-2xl md:text-3xl font-bold text-primary">RELQ.AI</span>
+          <span className="ml-2 text-2xl md:text-3xl font-bold text-primary">QAULI</span>
         </Link>
 
         {/* Mobile Try for Free button */}

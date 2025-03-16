@@ -1,4 +1,4 @@
-# RELQ.AI Issue Summary
+# QAULI Issue Summary
 
 ## Issues Identified
 

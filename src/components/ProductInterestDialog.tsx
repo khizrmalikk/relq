@@ -5,6 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ProductInterestDialogProps {
   open: boolean;
@@ -35,6 +37,11 @@ export function ProductInterestDialog({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    if (!userData.email) {
+      toast.error("Email is required to submit your interest");
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -50,9 +57,18 @@ export function ProductInterestDialog({
         }
       });
       
+      toast.success("Thank you for your interest! We'll be in touch soon.");
       onOpenChange(false);
+      
+      // Reset form state
+      setCompanySize("");
+      setLeadVolume("");
+      setCurrentCRM("");
+      setAdditionalInfo("");
+      setMarketingConsent(false);
     } catch (error) {
       console.error("Error submitting interest form:", error);
+      toast.error("There was an error submitting your information. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -61,23 +77,39 @@ export function ProductInterestDialog({
   const handleSkip = () => {
     // Only save basic info with marketing consent if given
     if (marketingConsent) {
-      onSubmit({
-        ...userData,
-        marketingConsent,
-        productInterest: false
-      });
+      try {
+        onSubmit({
+          ...userData,
+          marketingConsent,
+          productInterest: false
+        });
+        
+        if (marketingConsent) {
+          toast.success("You've been added to our mailing list.");
+        }
+      } catch (error) {
+        console.error("Error saving marketing consent:", error);
+        toast.error("There was an error saving your preferences.");
+      }
     }
     
     onOpenChange(false);
+    
+    // Reset form state
+    setCompanySize("");
+    setLeadVolume("");
+    setCurrentCRM("");
+    setAdditionalInfo("");
+    setMarketingConsent(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Interested in RELQ.AI?</DialogTitle>
+          <DialogTitle>Interested in QAULI?</DialogTitle>
           <DialogDescription>
-            Thanks for trying our demo! Tell us a bit about your needs to see how RELQ.AI can help your business.
+            Thanks for trying our demo! Tell us a bit about your needs to see how QAULI can help your business.
           </DialogDescription>
         </DialogHeader>
         
@@ -165,7 +197,7 @@ export function ProductInterestDialog({
               onCheckedChange={(checked) => setMarketingConsent(checked as boolean)}
             />
             <Label htmlFor="marketing-consent" className="text-sm">
-              I agree to receive product updates and marketing communications from RELQ.AI
+              I agree to receive product updates and marketing communications from QAULI
             </Label>
           </div>
         </div>
@@ -175,6 +207,7 @@ export function ProductInterestDialog({
             variant="outline" 
             onClick={handleSkip}
             className="sm:order-1"
+            disabled={isSubmitting}
           >
             Skip for now
           </Button>
@@ -183,7 +216,12 @@ export function ProductInterestDialog({
             disabled={isSubmitting}
             className="sm:order-2"
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : "Submit"}
           </Button>
         </DialogFooter>
       </DialogContent>
