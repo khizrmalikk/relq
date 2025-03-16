@@ -3,8 +3,8 @@ require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
 // Get Supabase URL and anon key from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 console.log('Supabase URL:', supabaseUrl ? 'Found' : 'Not found');
 console.log('Supabase Anon Key:', supabaseAnonKey ? 'Found' : 'Not found');
