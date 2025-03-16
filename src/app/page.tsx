@@ -311,7 +311,7 @@ export default function LandingPage() {
               <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
             </div>
           </section>
-          <section className="w-full py-12 md:py-24 lg:py-32 bg-transparent">
+          <section id="pricing" className="w-full py-12 md:py-24 lg:py-32 bg-transparent">
             <PricingCards />
           </section>
           <section className="w-full py-12 md:py-24 lg:py-32">
