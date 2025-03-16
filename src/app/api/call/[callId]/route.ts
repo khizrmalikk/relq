@@ -7,10 +7,11 @@ const retellClient = new Retell({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { callId: string } }
+  { params }: { params: Promise<{ callId: string }> }
 ) {
   try {
-    const { callId } = params;
+    // Await the params object before accessing its properties
+    const { callId } = await params;
     
     if (!callId) {
       return NextResponse.json(
