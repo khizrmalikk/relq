@@ -5,12 +5,14 @@ const retellClient = new Retell({
   apiKey: process.env.RETELL!,
 });
 
+// Define the route handler for GET requests
 export async function GET(
   request: NextRequest,
-  { params }: { params: { callId: string } }
+  { params }: { params: Promise<{ callId: string }> }
 ) {
   try {
-    const { callId } = params;
+    // In Next.js 15, params is a Promise
+    const { callId } = await params;
     
     if (!callId) {
       return NextResponse.json(
