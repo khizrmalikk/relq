@@ -9,12 +9,26 @@ import { PostHogProvider as PHProvider } from 'posthog-js/react'
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    // Initialize PostHog
     posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
       api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
-      person_profiles: 'always', // or 'always' to create profiles for anonymous users as well
-      capture_pageview: true, // Disable automatic pageview capture, as we capture manually
+      person_profiles: 'always',
+      capture_pageview: true,
       capture_pageleave: true,
-    })
+      debug: true, // Enable debug mode to see events in console
+      loaded: (posthog) => {
+        if (process.env.NODE_ENV === 'development') {
+          // Log when PostHog is loaded
+          console.log('PostHog loaded successfully');
+        }
+      }
+    });
+
+    // Test event to verify PostHog is working
+    posthog.capture('posthog_initialized', {
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV
+    });
   }, [])
 
   return (
@@ -38,7 +52,17 @@ function PostHogPageView() {
         url = url + "?" + searchParams.toString();
       }
 
-      posthog.capture('$pageview', { '$current_url': url })
+      // Capture pageview with additional properties
+      posthog.capture('$pageview', {
+        '$current_url': url,
+        '$pathname': pathname,
+        '$host': window.location.hostname,
+        timestamp: new Date().toISOString()
+      });
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Pageview captured:', url);
+      }
     }
   }, [pathname, searchParams, posthog])
 

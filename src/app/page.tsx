@@ -11,7 +11,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { DemoCall } from "@/components/landing/DemoCall";
@@ -22,12 +22,20 @@ import { Timeline } from "@/components/ui/timeline";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import PricingCards from "@/components/landing/Pricing-cards";
 import ProductInterestForm from "@/components/landing/Product-interest-form";
+import posthog from 'posthog-js';
 
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const router = useRouter();
 
+  // Add test event on component mount
+  useEffect(() => {
+    posthog.capture('landing_page_viewed', {
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV
+    });
+  }, []);
 
   const testimonials = [
     {
