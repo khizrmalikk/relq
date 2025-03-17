@@ -14,14 +14,14 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import { DemoCall } from "@/components/DemoCall";
+import { DemoCall } from "@/components/landing/DemoCall";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/landing/footer";
 import { FlipWords } from "@/components/ui/flip-words";
 import { Timeline } from "@/components/ui/timeline";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import PricingCards from "@/components/Pricing-cards";
-import ProductInterestForm from "@/components/Product-interest-form";
+import PricingCards from "@/components/landing/Pricing-cards";
+import ProductInterestForm from "@/components/landing/Product-interest-form";
 
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = useState(false);

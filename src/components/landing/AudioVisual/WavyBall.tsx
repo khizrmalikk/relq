@@ -2,8 +2,8 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { useSpring } from "framer-motion";
-import { WhiteRectangle } from "@/components/white-rectangle";
-import { MouthAudioVisualizer } from "@/components/mouthAudioVisualiser";
+import { WhiteRectangle } from "@/components/landing/AudioVisual/white-rectangle";
+import { MouthAudioVisualizer } from "@/components/landing/AudioVisual/mouthAudioVisualiser";
 
 export const WavyBall = ({
   isCalling = false,

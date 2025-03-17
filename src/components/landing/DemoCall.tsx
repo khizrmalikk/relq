@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { WavyBall } from "@/components/WavyBall";
+import { WavyBall } from "@/components/landing/AudioVisual/WavyBall";
 import { RetellWebClient } from "retell-client-js-sdk";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Upload, Clock, CheckCircle, XCircle, BarChart, Loader2 } from "lucide-react";
-import { ProductInterestDialog } from "@/components/ProductInterestDialog";
+import { ProductInterestDialog } from "@/components/landing/ProductInterestDialog";
 import { toast } from "sonner";
 
 const webClient = new RetellWebClient();
