@@ -13,6 +13,7 @@ import * as z from "zod";
 import { Upload, Clock, CheckCircle, XCircle, BarChart, Loader2 } from "lucide-react";
 import { ProductInterestDialog } from "@/components/landing/ProductInterestDialog";
 import { toast } from "sonner";
+import posthog from 'posthog-js';
 
 const webClient = new RetellWebClient();
 
@@ -149,7 +150,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       const data = await response.json();
       console.log("Call data received:", data);
       
-      // Calculate total duration in seconds
       let totalDurationSeconds = 0;
       if (data.start_timestamp && data.end_timestamp) {
         totalDurationSeconds = Math.round((data.end_timestamp - data.start_timestamp) / 1000);
@@ -163,14 +163,28 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       setCallResult(callResultData);
       setShowCallResult(true);
       
-      // Send email with call summary
+      // Track call analysis completion
+      posthog.capture('demo_call_analysis_completed', {
+        call_id: callId,
+        duration: totalDurationSeconds,
+        sentiment: data.call_analysis?.user_sentiment,
+        successful: data.call_analysis?.call_successful,
+        has_summary: !!data.call_analysis?.call_summary
+      });
+      
       await sendEmailSummary(callResultData);
       
     } catch (error) {
       console.error("Error fetching call data:", error);
+      
+      // Track call analysis error
+      posthog.capture('demo_call_analysis_error', {
+        call_id: callId,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      
       toast.error("Could not retrieve call analysis. We'll show a simplified summary.");
       
-      // Show a simplified call result with error information
       const fallbackResult = {
         call_id: callId,
         call_analysis: {
@@ -181,29 +195,31 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       setCallResult(fallbackResult);
       setShowCallResult(true);
       
-      // Still try to send email with basic information
       await sendEmailSummary(fallbackResult);
     } finally {
       setIsFetchingCallData(false);
     }
   };
 
-  // Common function to handle call ending (both manual and automatic)
   const handleEndCall = useCallback((message: string) => {
     setIsCallActive(false);
     onEndCallAction();
+    
+    // Track call completion
+    posthog.capture('demo_call_completed', {
+      call_id: currentCallId,
+      message
+    });
+    
     toast.success(message);
     
-    // Fetch call data after ending the call
     if (currentCallId) {
-      // Add a small delay to ensure the call has been processed by Retell
       setTimeout(() => {
         fetchCallData(currentCallId);
-      }, 2000); // 2 second delay
+      }, 2000);
     }
   }, [currentCallId, fetchCallData, onEndCallAction]);
 
-  // Set up speaking event handlers
   useEffect(() => {
     const handleStartTalking = () => {
       console.log("agent_start_talking");
@@ -218,7 +234,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     const handleCallEnd = () => {
       console.log("call_ended event received");
       if (isCallActive) {
-        // Call has ended from the agent side
         handleEndCall("Call ended by agent");
       }
     };
@@ -243,6 +258,17 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         throw new Error("No internet connection");
       }
 
+      // Track demo call start attempt
+      posthog.capture('demo_call_started', {
+        scenario,
+        user_info: {
+          first_name: form.getValues("firstName"),
+          last_name: form.getValues("lastName"),
+          email: form.getValues("email"),
+          phone: form.getValues("phone"),
+        }
+      });
+
       const response = await fetch("/api/agent", {
         method: "POST",
         headers: {
@@ -250,7 +276,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         },
         body: JSON.stringify({
           agent_id: "agent_24484cda1a99b8b30e7a14d10c",
-          scenario: scenario, // Pass scenario to backend if needed
+          scenario: scenario,
           vars: {
             first_name: form.getValues("firstName"),
             last_name: form.getValues("lastName"),
@@ -274,10 +300,24 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
 
       setIsCallActive(true);
       onStartCallAction(scenario);
+      
+      // Track successful call start
+      posthog.capture('demo_call_connected', {
+        call_id: data.call_id,
+        scenario
+      });
+      
       toast.success("Call started successfully");
     } catch (error) {
       console.error("Error starting conversation:", error);
       setIsCallActive(false);
+      
+      // Track call start failure
+      posthog.capture('demo_call_start_failed', {
+        scenario,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      
       toast.error("Failed to start the call. Please try again.");
     } finally {
       setIsLoading(false);
@@ -288,11 +328,24 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     setIsLoading(true);
     try {
       await webClient.stopCall();
+      
+      // Track manual call end
+      posthog.capture('demo_call_ended_manual', {
+        call_id: currentCallId
+      });
+      
       handleEndCall("Call ended successfully");
     } catch (error) {
       console.error("Error stopping conversation:", error);
+      
+      // Track call end error
+      posthog.capture('demo_call_end_error', {
+        call_id: currentCallId,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      
       toast.error("There was an issue ending the call.");
-      setIsCallActive(false); // Force state update even if error
+      setIsCallActive(false);
       onEndCallAction();
     } finally {
       setIsLoading(false);
@@ -301,14 +354,21 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
 
   const handleCallResultClose = () => {
     setShowCallResult(false);
-    // Show the interest dialog after closing the call summary
     setShowInterestDialog(true);
   };
   
   const handleInterestSubmit = async (data: any) => {
     try {
-      // Save user data to database only if they've given consent or shown interest
       if (data.marketingConsent || data.productInterest) {
+        // Track user interest submission
+        posthog.capture('demo_user_interest_submitted', {
+          call_id: callResult?.call_id,
+          marketing_consent: data.marketingConsent,
+          product_interest: data.productInterest,
+          interest_level: data.interestLevel,
+          follow_up_preference: data.followUpPreference
+        });
+
         const response = await fetch('/api/users', {
           method: 'POST',
           headers: {
@@ -342,6 +402,13 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       }
     } catch (error) {
       console.error('Error saving user data:', error);
+      
+      // Track user interest submission error
+      posthog.capture('demo_user_interest_error', {
+        call_id: callResult?.call_id,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      
       toast.error("There was an error processing your request.");
     }
   };
@@ -351,17 +418,14 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     setShowForm(true);
   };
 
-  // Add file validation function
   const validateFile = (file: File) => {
     if (!file) return true;
 
-    // Check file type
     if (!file.type.includes('csv')) {
       setFileError('Please upload a CSV file');
       return false;
     }
 
-    // Check file size (e.g., 5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       setFileError('File size should be less than 5MB');
       return false;
@@ -374,9 +438,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setShowForm(false);
     if (selectedScenario) {
-      // If there's a file, you can handle it here
       if (values.listingsFile) {
-        // Handle file upload logic here
         console.log('File to upload:', values.listingsFile);
       }
       await startConversation(selectedScenario);
@@ -489,7 +551,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         </DialogContent>
       </Dialog>
 
-      {/* Call Result Dialog */}
       <Dialog open={showCallResult} onOpenChange={setShowCallResult}>
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
@@ -509,7 +570,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
             
             {!isFetchingCallData && (
               <>
-                {/* Call Duration */}
                 {callResult?.total_duration_seconds && (
                   <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
                     <Clock className="h-5 w-5 text-primary" />
@@ -520,7 +580,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </div>
                 )}
                 
-                {/* Call Success */}
                 {callResult?.call_analysis?.call_successful !== undefined && (
                   <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
                     {callResult.call_analysis.call_successful ? (
@@ -535,7 +594,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </div>
                 )}
                 
-                {/* User Sentiment */}
                 {callResult?.call_analysis?.user_sentiment && (
                   <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
                     <BarChart className="h-5 w-5 text-primary" />
@@ -546,7 +604,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </div>
                 )}
                 
-                {/* Call Summary */}
                 {callResult?.call_analysis?.call_summary && (
                   <div className="p-3 bg-muted/50 rounded-lg">
                     <h4 className="font-medium mb-2">Call Summary</h4>
@@ -554,7 +611,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </div>
                 )}
                 
-                {/* Fallback message if no analysis data is available */}
                 {!callResult?.call_analysis?.call_summary && 
                  !callResult?.call_analysis?.user_sentiment && 
                  callResult?.call_analysis?.call_successful === undefined && (
@@ -567,7 +623,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </div>
                 )}
                 
-                {/* Email status */}
                 {isSendingEmail && (
                   <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
@@ -590,7 +645,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         </DialogContent>
       </Dialog>
 
-      {/* Product Interest Dialog */}
       <ProductInterestDialog
         open={showInterestDialog}
         onOpenChange={setShowInterestDialog}
