@@ -27,6 +27,20 @@ export async function GET(
       // Use the Retell SDK to get call details
       const callData = await retellClient.call.retrieve(callId);
       
+      // Calculate total cost if call_cost exists
+      let totalCost = 0;
+      if (callData.call_cost && Array.isArray(callData.call_cost.product_costs)) {
+        totalCost = callData.call_cost.product_costs.reduce((sum: number, product: any) => {
+          return sum + (product.cost || 0);
+        }, 0);
+        
+        // Convert to dollars if needed (assuming cost is in cents)
+        totalCost = totalCost / 100;
+        
+        // Add the total cost to the response
+        callData.total_cost_dollars = totalCost;
+      }
+      
       if (!callData) {
         throw new Error("No data returned from Retell API");
       }
@@ -59,6 +73,21 @@ export async function GET(
         }
 
         const data = await response.json();
+        
+        // Calculate total cost if call_cost exists
+        let totalCost = 0;
+        if (data.call_cost && Array.isArray(data.call_cost.product_costs)) {
+          totalCost = data.call_cost.product_costs.reduce((sum: number, product: any) => {
+            return sum + (product.cost || 0);
+          }, 0);
+          
+          // Convert to dollars if needed (assuming cost is in cents)
+          totalCost = totalCost / 100;
+          
+          // Add the total cost to the response
+          data.total_cost_dollars = totalCost;
+        }
+        
         console.log("Call data retrieved successfully via direct API");
         return NextResponse.json(data);
       } catch (fetchError) {

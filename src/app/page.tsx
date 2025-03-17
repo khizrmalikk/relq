@@ -31,22 +31,34 @@ export default function LandingPage() {
 
   const testimonials = [
     {
-      quote: "I couldn't believe how much time we saved. This tool is a game-changer for real estate agents!",
-      name: "Sarah Johnson",
-      designation: "Real Estate Agent",
-      src: "/avatars/blonde.webp" // Make sure to add actual image paths
+      quote: "I deliver rapid, clear communication with a disciplined dialogue structure, specializing in client needs analysis and efficient property matching.",
+      name: "Sarah Lee",
+      designation: "Real Estate Agent (English Speaker – Female)",
+      src: "/avatars/blonde.webp" // Assuming this image works for Sarah Lee
     },
     {
-      quote: "The AI-powered calls have dramatically improved our lead response time and conversion rates.",
+      quote: "I provide quick and structured responses following a strict conversation flow, with expertise in property listings and market trends.",
       name: "Michael Chen",
-      designation: "Real Estate Agent",
-      src: "/avatars/arabman.webp"
+      designation: "Real Estate Agent (English Speaker – Male)",
+      src: "/avatars/man.webp" // Keeping existing image for Michael
     },
     {
-      quote: "This platform has revolutionized how we handle incoming leads. It's like having a 24/7 sales team.",
-      name: "Emma Rodriguez",
-      designation: "Agency Owner",
-      src: "/avatars/arab.webp"
+      quote: "I offer fast, streamlined conversational flow tailored to client inquiries, with deep knowledge of regional property markets and bilingual support.",
+      name: "Amir Haddad",
+      designation: "Real Estate Agent (Arabic Speaker – Male)",
+      src: "/avatars/arabman.webp" // Repurposing existing image for Amir
+    },
+    {
+      quote: "I provide quick, precise responses with a strict conversational framework and expertise in local real estate dynamics with culturally tuned communication.",
+      name: "Leila Mansour",
+      designation: "Real Estate Agent (Arabic Speaker – Female)",
+      src: "/avatars/arab.webp" // You may want to add a new image for Leila
+    },
+    {
+      quote: "I can dynamically switch between languages to suit client preferences, offering a personalized, flexible approach beyond strict conversational flows.",
+      name: "Elena Rodriguez",
+      designation: "Premium Real Estate Agent (Dynamic Multilingual – Female)",
+      src: "/avatars/brown.webp" // You may want to add a new image for Elena
     }
   ];
 
@@ -206,7 +218,7 @@ export default function LandingPage() {
         <BackgroundGradientAnimation interactive={true} className="w-full">
           <section className="flex flex-col justify-center p-4 min-h-screen bg-transparent">
 
-            <div className="flex flex-col p-4 ml-10 z-10">
+            <div className="flex flex-col p-4 z-10 sm:ml-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl mb-4">
                 Transform Your Real Estate Business with
               </h2>

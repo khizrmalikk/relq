@@ -87,7 +87,8 @@ export async function POST(request: NextRequest) {
         call_duration: userData.callDuration || null,
         call_summary: userData.callSummary || null,
         call_sentiment: userData.call_analysis?.user_sentiment || null,
-        call_successful: userData.call_analysis?.call_successful || null
+        call_successful: userData.call_analysis?.call_successful || null,
+        call_cost: userData.callCost || null
       };
       
       const { error: callError } = await supabase

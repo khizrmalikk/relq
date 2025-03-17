@@ -35,6 +35,7 @@ interface CallResult {
   start_timestamp?: number;
   end_timestamp?: number;
   total_duration_seconds?: number;
+  total_cost_dollars?: number;
 }
 
 const formSchema = z.object({
@@ -590,8 +591,8 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
         onSubmit={handleInterestSubmit}
       />
 
-      <div className="grid grid-cols-3 gap-8">
-        <div className="col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="col-span-1 md:col-span-2">
           <div className="flex flex-col space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl font-bold tracking-tighter sm:text-6xl text-white">
@@ -642,9 +643,9 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mt-8 md:mt-0">
           <WavyBall
-            size={typeof window !== 'undefined' && window.innerWidth < 640 ? 100 : 200}
+            size={200}
             isCalling={isCallActive}
             isLoading={isLoading}
             isSpeaking={isSpeaking}

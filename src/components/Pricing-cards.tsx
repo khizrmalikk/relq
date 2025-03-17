@@ -41,12 +41,12 @@ export default function PricingCards() {
                                         <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        1 hour of AI-powered calls per month for individual real estate agents.
+                                        1 hour of AI-powered calls per day for individual real estate agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>1 hour of calls per month</span>
+                                            <span>1 hour of calls per day</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
@@ -86,12 +86,12 @@ export default function PricingCards() {
                                         <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        2 hours of AI-powered calls per month for ambitious real estate agents.
+                                        2 hours of AI-powered calls per day for ambitious real estate agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>2 hours of calls per month</span>
+                                            <span>2 hours of calls per day</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
@@ -135,16 +135,16 @@ export default function PricingCards() {
                                 </CardHeader>
                                 <CardContent className="flex-1">
                                     <div className="mb-6">
-                                        <span className="text-4xl font-bold">1,249</span>
+                                        <span className="text-4xl font-bold">1,299</span>
                                         <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        1 hour of AI-powered calls per month for agencies with 8-12 agents.
+                                        1 hour of AI-powered calls per day for agencies with 8-12 agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>1 hour of calls per month per agent</span>
+                                            <span>1 hour of calls per day per agent</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
@@ -182,16 +182,16 @@ export default function PricingCards() {
                                 </CardHeader>
                                 <CardContent className="flex-1">
                                     <div className="mb-6">
-                                        <span className="text-4xl font-bold">2,299</span>
+                                        <span className="text-4xl font-bold">2,199</span>
                                         <span className="text-muted-foreground group-hover:text-primary-foreground/80"> AED/month</span>
                                     </div>
                                     <p className="mb-4 text-muted-foreground group-hover:text-primary-foreground/80">
-                                        2 hours of AI-powered calls per month for agencies with 8-12 agents.
+                                        2 hours of AI-powered calls per day for agencies with 8-12 agents.
                                     </p>
                                     <ul className="space-y-2">
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />
-                                            <span>2 hours of calls per month per agent</span>
+                                            <span>2 hours of calls per day per agent</span>
                                         </li>
                                         <li className="flex items-center gap-2">
                                             <Check className="h-4 w-4 text-primary group-hover:text-primary-foreground" />

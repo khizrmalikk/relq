@@ -32,6 +32,7 @@ export type CallRecord = {
   call_summary?: string;
   call_sentiment?: string;
   call_successful?: boolean;
+  call_cost?: number;
   created_at?: string;
 };
 
