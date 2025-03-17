@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { WavyBall } from "@/components/WavyBall";
 import { RetellWebClient } from "retell-client-js-sdk";
@@ -71,99 +71,55 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     },
   });
 
-  // Set up speaking event handlers
-  useEffect(() => {
-    const handleStartTalking = () => {
-      console.log("agent_start_talking");
-      setIsSpeaking(true);
-    };
+  const formatDuration = useCallback((seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }, []);
 
-    const handleStopTalking = () => {
-      console.log("agent_stop_talking");
-      setIsSpeaking(false);
-    };
-
-    if (isCallActive) {
-      webClient.on("agent_start_talking", handleStartTalking);
-      webClient.on("agent_stop_talking", handleStopTalking);
-    }
-
-    return () => {
-      webClient.off("agent_start_talking", handleStartTalking);
-      webClient.off("agent_stop_talking", handleStopTalking);
-    };
-  }, [isCallActive]);
-
-  const startConversation = async (scenario: string) => {
-    setIsLoading(true);
+  const sendEmailSummary = async (callData: CallResult) => {
+    setIsSendingEmail(true);
     try {
-      if (!navigator.onLine) {
-        throw new Error("No internet connection");
+      const formValues = form.getValues();
+      
+      if (!formValues.email) {
+        console.error('Cannot send email: Email address is missing');
+        toast.error("Could not send email summary: Email address is missing");
+        return;
       }
-
-      const response = await fetch("/api/agent", {
-        method: "POST",
+      
+      console.log('Sending email summary to:', formValues.email);
+      
+      const response = await fetch('/api/email', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          agent_id: "agent_24484cda1a99b8b30e7a14d10c",
-          scenario: scenario, // Pass scenario to backend if needed
-          vars: {
-            first_name: form.getValues("firstName"),
-            last_name: form.getValues("lastName"),
-            email: form.getValues("email"),
-            phone: form.getValues("phone"),
-          },
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          callSummary: callData.call_analysis?.call_summary,
+          callDuration: callData.total_duration_seconds ? formatDuration(callData.total_duration_seconds) : undefined,
+          callId: callData.call_id
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        const errorText = errorData ? JSON.stringify(errorData) : await response.text();
+        console.error(`Error sending email (${response.status}):`, errorText);
+        throw new Error(`Error: ${response.status} - ${errorText}`);
       }
-
-      const data = await response.json();
-      setCurrentCallId(data.call_id);
       
-      await webClient.startCall({
-        accessToken: data.access_token,
-      });
-
-      setIsCallActive(true);
-      onStartCallAction(scenario);
-      toast.success("Call started successfully");
+      const responseData = await response.json();
+      console.log('Email sent successfully, ID:', responseData.id);
+      toast.success("Call summary sent to your email");
     } catch (error) {
-      console.error("Error starting conversation:", error);
-      setIsCallActive(false);
-      toast.error("Failed to start the call. Please try again.");
+      console.error('Error sending email:', error);
+      toast.error("We couldn't send your call summary email. Please check your email address.");
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const stopConversation = async () => {
-    setIsLoading(true);
-    try {
-      await webClient.stopCall();
-      setIsCallActive(false);
-      onEndCallAction();
-      toast.success("Call ended successfully");
-      
-      // Fetch call data after ending the call
-      if (currentCallId) {
-        // Add a small delay to ensure the call has been processed by Retell
-        setTimeout(() => {
-          fetchCallData(currentCallId);
-        }, 2000); // 2 second delay
-      }
-    } catch (error) {
-      console.error("Error stopping conversation:", error);
-      toast.error("There was an issue ending the call.");
-      setIsCallActive(false); // Force state update even if error
-      onEndCallAction();
-    } finally {
-      setIsLoading(false);
+      setIsSendingEmail(false);
     }
   };
 
@@ -232,49 +188,114 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     }
   };
 
-  const sendEmailSummary = async (callData: CallResult) => {
-    setIsSendingEmail(true);
-    try {
-      const formValues = form.getValues();
-      
-      if (!formValues.email) {
-        console.error('Cannot send email: Email address is missing');
-        toast.error("Could not send email summary: Email address is missing");
-        return;
+  // Common function to handle call ending (both manual and automatic)
+  const handleEndCall = useCallback((message: string) => {
+    setIsCallActive(false);
+    onEndCallAction();
+    toast.success(message);
+    
+    // Fetch call data after ending the call
+    if (currentCallId) {
+      // Add a small delay to ensure the call has been processed by Retell
+      setTimeout(() => {
+        fetchCallData(currentCallId);
+      }, 2000); // 2 second delay
+    }
+  }, [currentCallId, fetchCallData, onEndCallAction]);
+
+  // Set up speaking event handlers
+  useEffect(() => {
+    const handleStartTalking = () => {
+      console.log("agent_start_talking");
+      setIsSpeaking(true);
+    };
+
+    const handleStopTalking = () => {
+      console.log("agent_stop_talking");
+      setIsSpeaking(false);
+    };
+
+    const handleCallEnd = () => {
+      console.log("call_ended event received");
+      if (isCallActive) {
+        // Call has ended from the agent side
+        handleEndCall("Call ended by agent");
       }
-      
-      console.log('Sending email summary to:', formValues.email);
-      
-      const response = await fetch('/api/email', {
-        method: 'POST',
+    };
+
+    if (isCallActive) {
+      webClient.on("agent_start_talking", handleStartTalking);
+      webClient.on("agent_stop_talking", handleStopTalking);
+      webClient.on("call_ended", handleCallEnd);
+    }
+
+    return () => {
+      webClient.off("agent_start_talking", handleStartTalking);
+      webClient.off("agent_stop_talking", handleStopTalking);
+      webClient.off("call_ended", handleCallEnd);
+    };
+  }, [isCallActive, handleEndCall]);
+
+  const startConversation = async (scenario: string) => {
+    setIsLoading(true);
+    try {
+      if (!navigator.onLine) {
+        throw new Error("No internet connection");
+      }
+
+      const response = await fetch("/api/agent", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: formValues.email,
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          callSummary: callData.call_analysis?.call_summary,
-          callDuration: callData.total_duration_seconds ? formatDuration(callData.total_duration_seconds) : undefined,
-          callId: callData.call_id
+          agent_id: "agent_24484cda1a99b8b30e7a14d10c",
+          scenario: scenario, // Pass scenario to backend if needed
+          vars: {
+            first_name: form.getValues("firstName"),
+            last_name: form.getValues("lastName"),
+            email: form.getValues("email"),
+            phone: form.getValues("phone"),
+          },
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorText = errorData ? JSON.stringify(errorData) : await response.text();
-        console.error(`Error sending email (${response.status}):`, errorText);
-        throw new Error(`Error: ${response.status} - ${errorText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error: ${response.status}`);
       }
+
+      const data = await response.json();
+      setCurrentCallId(data.call_id);
       
-      const responseData = await response.json();
-      console.log('Email sent successfully, ID:', responseData.id);
-      toast.success("Call summary sent to your email");
+      await webClient.startCall({
+        accessToken: data.access_token,
+      });
+
+      setIsCallActive(true);
+      onStartCallAction(scenario);
+      toast.success("Call started successfully");
     } catch (error) {
-      console.error('Error sending email:', error);
-      toast.error("We couldn't send your call summary email. Please check your email address.");
+      console.error("Error starting conversation:", error);
+      setIsCallActive(false);
+      toast.error("Failed to start the call. Please try again.");
     } finally {
-      setIsSendingEmail(false);
+      setIsLoading(false);
+    }
+  };
+
+  const stopConversation = async () => {
+    setIsLoading(true);
+    try {
+      await webClient.stopCall();
+      handleEndCall("Call ended successfully");
+    } catch (error) {
+      console.error("Error stopping conversation:", error);
+      toast.error("There was an issue ending the call.");
+      setIsCallActive(false); // Force state update even if error
+      onEndCallAction();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -323,12 +344,6 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
       console.error('Error saving user data:', error);
       toast.error("There was an error processing your request.");
     }
-  };
-
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   const handleStartDemo = (scenario: string) => {
