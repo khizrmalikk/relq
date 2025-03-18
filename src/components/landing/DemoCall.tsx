@@ -665,10 +665,10 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
           <div className="flex flex-col space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl font-bold tracking-tighter sm:text-6xl text-white">
-                Experience the Future
+                Experience the Future of Real Estate
               </h2>
               <p className="text-xl text-gray-300 max-w-[600px]">
-                Choose a demo scenario to see how our AI adapts to different real estate situations and client needs.
+                Start a demo call to see how our AI adapts to different real estate situations and client needs.
               </p>
             </div>
             <div className="flex flex-col space-y-4">
