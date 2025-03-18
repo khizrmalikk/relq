@@ -328,6 +328,7 @@ export default function LandingPage() {
         </section> */}
           <section className="w-full bg-transparent">
             <div className="container mx-auto px-4 md:px-6 bg-black/50 p-8 rounded-lg">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center text-white">Our Agents</h2>
               <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
             </div>
           </section>

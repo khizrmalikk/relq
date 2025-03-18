@@ -143,7 +143,7 @@ export function ProductInterestDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[550px]">
+        <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Interested in QAULI?</DialogTitle>
             <DialogDescription>
@@ -267,7 +267,7 @@ export function ProductInterestDialog({
 
       {/* Early Access Dialog */}
       <Dialog open={showEarlyAccessDialog} onOpenChange={setShowEarlyAccessDialog}>
-        <DialogContent className="sm:max-w-[450px]">
+        <DialogContent className="sm:max-w-[450px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Get Early Access to QAULI</DialogTitle>
             <DialogDescription>
