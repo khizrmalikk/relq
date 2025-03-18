@@ -1,11 +1,28 @@
 "use client"
 
 import { Check } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProductInterestDialog } from "@/components/landing/ProductInterestDialog"
+import { ContactDialog } from "@/components/landing/ContactDialog"
 
 export default function PricingCards() {
+    const [showContactDialog, setShowContactDialog] = useState(false)
+    const [showInterestDialog, setShowInterestDialog] = useState(false)
+    const [contactData, setContactData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+    })
+
+    const handleContactSubmit = (data: any) => {
+        setContactData(data)
+        setShowInterestDialog(true)
+    }
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="mx-auto max-w-7xl space-y-8">
@@ -47,7 +64,10 @@ export default function PricingCards() {
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full group-hover:bg-primary-foreground group-hover:text-primary">
+                            <Button 
+                                className="w-full group-hover:bg-primary-foreground group-hover:text-primary"
+                                onClick={() => setShowContactDialog(true)}
+                            >
                                 Get Started
                             </Button>
                         </CardFooter>
@@ -85,7 +105,10 @@ export default function PricingCards() {
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full group-hover:bg-primary-foreground group-hover:text-primary">
+                            <Button 
+                                className="w-full group-hover:bg-primary-foreground group-hover:text-primary"
+                                onClick={() => setShowContactDialog(true)}
+                            >
                                 Choose Plan
                             </Button>
                         </CardFooter>
@@ -126,7 +149,10 @@ export default function PricingCards() {
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full group-hover:bg-primary-foreground group-hover:text-primary">
+                            <Button 
+                                className="w-full group-hover:bg-primary-foreground group-hover:text-primary"
+                                onClick={() => setShowContactDialog(true)}
+                            >
                                 Choose Plan
                             </Button>
                         </CardFooter>
@@ -164,13 +190,32 @@ export default function PricingCards() {
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full group-hover:bg-primary-foreground group-hover:text-primary">
+                            <Button 
+                                className="w-full group-hover:bg-primary-foreground group-hover:text-primary"
+                                onClick={() => setShowContactDialog(true)}
+                            >
                                 Choose Plan
                             </Button>
                         </CardFooter>
                     </Card>
                 </div>
             </div>
+
+            <ContactDialog
+                open={showContactDialog}
+                onOpenChange={setShowContactDialog}
+                onContactSubmit={handleContactSubmit}
+            />
+
+            <ProductInterestDialog
+                open={showInterestDialog}
+                onOpenChange={setShowInterestDialog}
+                userData={contactData}
+                onSubmit={async (data) => {
+                    console.log("Interest form submitted:", data);
+                    setShowInterestDialog(false);
+                }}
+            />
         </div>
     )
 }

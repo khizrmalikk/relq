@@ -235,7 +235,7 @@ export function ProductInterestDialog({
                 onCheckedChange={(checked) => setMarketingConsent(checked as boolean)}
               />
               <Label htmlFor="marketing-consent" className="text-sm">
-                I agree to receive product updates and marketing communications from QAULI
+                I would like to know when QAULI is launched and get updates on the product
               </Label>
             </div>
           </div>

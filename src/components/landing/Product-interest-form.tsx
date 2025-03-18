@@ -9,6 +9,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import posthog from 'posthog-js'
 
 const formSchema = z.object({
     fullName: z.string().min(2, {
@@ -37,21 +38,50 @@ export default function ProductInterestForm() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true)
 
-        // Simulate API call
         try {
-            // Replace with your actual form submission logic
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            // Track form submission
+            posthog.capture('product_interest_form_submitted', {
+                full_name: values.fullName,
+                email: values.email,
+                has_feedback: !!values.feedback,
+                has_notes: !!values.notes
+            });
 
-            console.log(values)
+            // Split full name into first and last name
+            const [firstName = "", lastName = ""] = values.fullName.split(" ");
+
+            // Save user data to database
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email: values.email,
+                    marketingConsent: false,
+                    productInterest: true,
+                    feedback: values.feedback,
+                    notes: values.notes
+                }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Error saving user data (${response.status}):`, errorText);
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
+
             toast.success("Form submitted successfully", {
                 description: "Thank you for your interest in our product!",
             })
             form.reset()
         } catch (error) {
+            console.error('Error saving user data:', error);
             toast.error("Something went wrong", {
                 description: "Please try again later.",
             })
-            console.error(error)
         } finally {
             setIsSubmitting(false)
         }
