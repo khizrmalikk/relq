@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, User, CallRecord, InterestDetails } from "@/lib/supabase";
+import { sendInterestEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -102,22 +103,39 @@ export async function POST(request: NextRequest) {
     }
     
     // If there's interest data, store it
-    if (userData.productInterest && userData.interestDetails) {
-      const interestDetails: InterestDetails = {
-        user_id: userId,
-        company_size: userData.interestDetails.companySize || null,
-        lead_volume: userData.interestDetails.leadVolume || null,
-        current_crm: userData.interestDetails.currentCRM || null,
-        additional_info: userData.interestDetails.additionalInfo || null
-      };
-      
-      const { error: interestError } = await supabase
-        .from('interest_details')
-        .insert(interestDetails);
-      
-      if (interestError) {
-        console.error("Error storing interest details:", interestError);
-        // Continue execution - we don't want to fail the whole request if just the interest details fail
+    if (userData.productInterest) {
+      // Store interest details if they exist
+      if (userData.interestDetails) {
+        const interestDetails: InterestDetails = {
+          user_id: userId,
+          company_size: userData.interestDetails.companySize || null,
+          lead_volume: userData.interestDetails.leadVolume || null,
+          current_crm: userData.interestDetails.currentCRM || null,
+          additional_info: userData.interestDetails.additionalInfo || null
+        };
+        
+        const { error: interestError } = await supabase
+          .from('interest_details')
+          .insert(interestDetails);
+        
+        if (interestError) {
+          console.error("Error storing interest details:", interestError);
+          // Continue execution - we don't want to fail the whole request if just the interest details fail
+        }
+      }
+
+      // Send appropriate email based on whether they completed the demo
+      try {
+        await sendInterestEmail({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          callSummary: userData.callSummary,
+          interestDetails: userData.interestDetails
+        });
+      } catch (emailError) {
+        console.error("Error sending interest email:", emailError);
+        // Continue execution - we don't want to fail the whole request if just the email fails
       }
     }
 

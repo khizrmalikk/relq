@@ -81,14 +81,14 @@ export function ProductInterestDialog({
     setEarlyAccessConsent(false);
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     // Only save basic info with marketing consent if given
     if (marketingConsent) {
       try {
-        onSubmit({
+        await onSubmit({
           ...userData,
           marketingConsent,
-          productInterest: false
+          productInterest: true
         });
         
         if (marketingConsent) {
@@ -121,7 +121,7 @@ export function ProductInterestDialog({
         ...userData,
         marketingConsent: earlyAccessConsent,
         earlyAccessInterest: true,
-        productInterest: false
+        productInterest: true
       });
       
       toast.success("Thank you! You'll be among the first to know when we launch with special early pricing.");
@@ -147,7 +147,7 @@ export function ProductInterestDialog({
           <DialogHeader>
             <DialogTitle>Interested in QAULI?</DialogTitle>
             <DialogDescription>
-              Thanks for trying our demo! Tell us a bit about your needs to see how QAULI can help your business.
+              Tell us a bit about your needs to see how QAULI can help your business.
             </DialogDescription>
           </DialogHeader>
           

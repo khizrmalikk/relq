@@ -21,12 +21,22 @@ import { FlipWords } from "@/components/ui/flip-words";
 import { Timeline } from "@/components/ui/timeline";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import PricingCards from "@/components/landing/Pricing-cards";
-import ProductInterestForm from "@/components/landing/Product-interest-form";
+import { ProductInterestDialog } from "@/components/landing/ProductInterestDialog";
 import posthog from 'posthog-js';
+import { ContactDialog } from "@/components/landing/ContactDialog";
+import { toast } from "sonner";
 
 export default function LandingPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [interestDialogOpen, setInterestDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [contactInfo, setContactInfo] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+  });
   const router = useRouter();
 
   // Add test event on component mount
@@ -158,7 +168,6 @@ export default function LandingPage() {
     },
   ];
 
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you can handle the email submission
@@ -172,6 +181,47 @@ export default function LandingPage() {
 
   const handleEndCall = () => {
     console.log("Call ended");
+  };
+
+  // Handle contact form submission
+  const handleContactSubmit = (data: any) => {
+    setContactInfo(data);
+    setInterestDialogOpen(true);
+  };
+
+  // Handle interest form submission
+  const handleInterestSubmit = async (data: any) => {
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          productInterest: true, // Set to true by default
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit interest');
+      }
+
+      // Track form submission
+      posthog.capture('product_interest_form_submitted', {
+        email: data.email,
+        company_size: data.interestDetails?.companySize,
+        lead_volume: data.interestDetails?.leadVolume,
+        current_crm: data.interestDetails?.currentCRM,
+        has_additional_info: !!data.interestDetails?.additionalInfo,
+        marketing_consent: data.marketingConsent
+      });
+
+      setInterestDialogOpen(false);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      toast.error('Failed to submit your interest. Please try again.');
+    }
   };
 
   return (
@@ -336,8 +386,20 @@ export default function LandingPage() {
             <PricingCards />
           </section>
           <section className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container mx-auto px-4 md:px-6 bg-black/50 p-8 rounded-lg">
-              <ProductInterestForm />
+            <div className="container mx-auto px-4 md:px-6 bg-black/50 p-8 rounded-lg text-center">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white mb-4">
+                Ready to Transform Your Real Estate Business?
+              </h2>
+              <p className="text-xl text-white/80 mb-8">
+                Let us know you're interested and we'll keep you updated on our launch.
+              </p>
+              <Button 
+                onClick={() => setContactDialogOpen(true)}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                size="lg"
+              >
+                I'm Interested
+              </Button>
             </div>
           </section>
         </BackgroundGradientAnimation>
@@ -375,6 +437,20 @@ export default function LandingPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Contact Dialog used for both "I'm Interested" and Pricing Cards */}
+      <ContactDialog
+        open={contactDialogOpen}
+        onOpenChange={setContactDialogOpen}
+        onContactSubmit={handleContactSubmit}
+      />
+
+      <ProductInterestDialog 
+        open={interestDialogOpen}
+        onOpenChange={setInterestDialogOpen}
+        userData={contactInfo}
+        onSubmit={handleInterestSubmit}
+      />
     </div>
   );
 }

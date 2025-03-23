@@ -124,80 +124,17 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     }
   };
 
-  const fetchCallData = async (callId: string) => {
-    setIsFetchingCallData(true);
+  const fetchCallData = async (callId: string): Promise<CallResult> => {
     try {
-      console.log("Fetching call data for ID:", callId);
-      
-      if (!callId) {
-        throw new Error("Call ID is missing");
-      }
-      
-      const response = await fetch(`/api/call/${callId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
+      const response = await fetch(`/api/call/${callId}`);
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorText = errorData ? JSON.stringify(errorData) : await response.text();
-        console.error(`Error fetching call data (${response.status}):`, errorText);
-        throw new Error(`Error: ${response.status} - ${errorText}`);
+        throw new Error('Failed to fetch call data');
       }
-
       const data = await response.json();
-      console.log("Call data received:", data);
-      
-      let totalDurationSeconds = 0;
-      if (data.start_timestamp && data.end_timestamp) {
-        totalDurationSeconds = Math.round((data.end_timestamp - data.start_timestamp) / 1000);
-      }
-      
-      const callResultData = {
-        ...data,
-        total_duration_seconds: totalDurationSeconds
-      };
-      
-      setCallResult(callResultData);
-      setShowCallResult(true);
-      
-      // Track call analysis completion
-      posthog.capture('demo_call_analysis_completed', {
-        call_id: callId,
-        duration: totalDurationSeconds,
-        sentiment: data.call_analysis?.user_sentiment,
-        successful: data.call_analysis?.call_successful,
-        has_summary: !!data.call_analysis?.call_summary
-      });
-      
-      await sendEmailSummary(callResultData);
-      
+      return data;
     } catch (error) {
-      console.error("Error fetching call data:", error);
-      
-      // Track call analysis error
-      posthog.capture('demo_call_analysis_error', {
-        call_id: callId,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-      
-      toast.error("Could not retrieve call analysis. We'll show a simplified summary.");
-      
-      const fallbackResult = {
-        call_id: callId,
-        call_analysis: {
-          call_summary: "We couldn't retrieve the full call analysis. Your call was completed, but the analysis data is unavailable at this time."
-        }
-      };
-      
-      setCallResult(fallbackResult);
-      setShowCallResult(true);
-      
-      await sendEmailSummary(fallbackResult);
-    } finally {
-      setIsFetchingCallData(false);
+      console.error('Error fetching call data:', error);
+      throw error;
     }
   };
 
@@ -214,11 +151,24 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
     toast.success(message);
     
     if (currentCallId) {
-      setTimeout(() => {
-        fetchCallData(currentCallId);
+      setIsFetchingCallData(true);
+      setTimeout(async () => {
+        try {
+          const callData = await fetchCallData(currentCallId);
+          setCallResult(callData);
+          setShowCallResult(true);
+          
+          // Send call summary email
+          await sendEmailSummary(callData);
+        } catch (error) {
+          console.error('Error fetching call data:', error);
+          toast.error('Failed to fetch call data');
+        } finally {
+          setIsFetchingCallData(false);
+        }
       }, 2000);
     }
-  }, [currentCallId, fetchCallData, onEndCallAction]);
+  }, [currentCallId, fetchCallData, onEndCallAction, sendEmailSummary]);
 
   useEffect(() => {
     const handleStartTalking = () => {
@@ -437,6 +387,32 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setShowForm(false);
+    
+    // Send welcome email first
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          phone: values.phone,
+          productInterest: true,
+          marketingConsent: true // Since they're doing a demo, we assume they want updates
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save user data');
+      }
+    } catch (error) {
+      console.error('Error saving initial user data:', error);
+      // Continue with the demo even if email fails
+    }
+
     if (selectedScenario) {
       if (values.listingsFile) {
         console.log('File to upload:', values.listingsFile);
@@ -505,7 +481,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="listingsFile"
                 render={({ field: { onChange, value, ...field } }) => (
@@ -542,7 +518,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
                     )}
                   </FormItem>
                 )}
-              />
+              /> */}
               <Button type="submit" className="w-full bg-primary text-primary-foreground">
                 Start Demo
               </Button>

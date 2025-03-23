@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Send email with HTML template
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || "QAULI <onboarding@resend.dev>",
+      from: process.env.EMAIL_FROM || "QAULI <admin@untamedlogic.co>",
       to: email,
       subject: "Your QAULI Call Summary",
       html: `

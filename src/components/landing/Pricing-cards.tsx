@@ -2,6 +2,8 @@
 
 import { Check } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
+import posthog from 'posthog-js'
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,6 +23,40 @@ export default function PricingCards() {
     const handleContactSubmit = (data: any) => {
         setContactData(data)
         setShowInterestDialog(true)
+    }
+
+    const handleInterestSubmit = async (data: any) => {
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...data,
+                    productInterest: true,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit interest');
+            }
+
+            // Track form submission
+            posthog.capture('product_interest_form_submitted', {
+                email: data.email,
+                company_size: data.interestDetails?.companySize,
+                lead_volume: data.interestDetails?.leadVolume,
+                current_crm: data.interestDetails?.currentCRM,
+                has_additional_info: !!data.interestDetails?.additionalInfo,
+                marketing_consent: data.marketingConsent
+            });
+
+            setShowInterestDialog(false);
+        } catch (error) {
+            console.error('Error saving user data:', error);
+            toast.error('Failed to submit your interest. Please try again.');
+        }
     }
 
     return (
@@ -211,10 +247,7 @@ export default function PricingCards() {
                 open={showInterestDialog}
                 onOpenChange={setShowInterestDialog}
                 userData={contactData}
-                onSubmit={async (data) => {
-                    console.log("Interest form submitted:", data);
-                    setShowInterestDialog(false);
-                }}
+                onSubmit={handleInterestSubmit}
             />
         </div>
     )
