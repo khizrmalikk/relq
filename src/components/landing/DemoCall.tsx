@@ -225,7 +225,7 @@ export function DemoCall({ onStartCallAction, onEndCallAction }: DemoCallProps) 
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          agent_id: "agent_24484cda1a99b8b30e7a14d10c",
+          agent_id: "agent_6dd5336ea9dfe8a90bdce9b4a9",
           scenario: scenario,
           vars: {
             first_name: form.getValues("firstName"),
