@@ -394,9 +394,9 @@ export default function LandingPage() {
                 <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
               </div>
             </section>
-            <section id="pricing" className="w-full py-12 md:py-24 lg:py-32 bg-transparent">
+            {/* <section id="pricing" className="w-full py-12 md:py-24 lg:py-32 bg-transparent">
               <PricingCards />
-            </section>
+            </section> */}
             <section className="w-full py-12 md:py-24 lg:py-32">
               <div className="container mx-auto px-4 md:px-6 bg-black/50 p-8 rounded-lg text-center">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white mb-4">
